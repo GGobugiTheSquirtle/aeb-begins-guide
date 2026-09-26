@@ -22,7 +22,7 @@
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 var(--sans);letter-spacing:-.005em}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 var(--sans);letter-spacing:-.005em;word-break:keep-all;overflow-wrap:anywhere}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(900px 500px at 12% -10%,rgba(214,196,160,.10),transparent 60%),
              radial-gradient(700px 420px at 100% 0%,rgba(160,190,200,.08),transparent 60%)}
@@ -84,6 +84,9 @@ h1{font:700 40px/1.1 var(--serif);letter-spacing:-.03em;color:var(--ink2);margin
 .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
 .tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
 .tag{display:inline-block;font:600 10.5px/1.5 var(--sans);letter-spacing:.03em;padding:1px 7px;border-radius:9999px;background:var(--gray);color:var(--grayt);white-space:nowrap}
+.card .tag,.hero .tag{max-width:100%;white-space:normal;border-radius:6px;text-align:left}   /* 2026-09-27 도시락 효과 · 좋아하는 것처럼 긴 태그는 줄바꿈(말줄임은 차이를 가린다) */
+.card>div:not(.ic){max-width:100%}
+.hero>div:not(.ic){min-width:0}
 .t-불,.t-약점{background:var(--red);color:var(--redt)}
 .t-물,.t-흡수{background:var(--blue);color:var(--bluet)}
 .t-바람{background:var(--green);color:var(--greent)}
@@ -149,10 +152,10 @@ details.fold summary::-webkit-details-marker{display:none}
 details.fold summary::after{content:"+";font:500 16px var(--mono);color:var(--muted)}
 details.fold[open] summary::after{content:"−"}
 details.fold .in{padding:0 0 12px;font-size:13.5px}
-.rs{display:grid;grid-template-columns:repeat(8,1fr);border:1px solid var(--line2);border-radius:8px;overflow:hidden;text-align:center;font-size:12px}
-.rs div{padding:8px 2px;border-right:1px solid var(--line2)}
-.rs div:last-child{border-right:0}
-.rs .h{color:var(--muted);font-size:11px;margin-bottom:4px}
+.rs{display:grid;grid-template-columns:repeat(8,1fr);gap:1px;background:var(--line2);border:1px solid var(--line2);border-radius:8px;overflow:hidden;text-align:center;font-size:12px}
+.rs>div{padding:8px 2px;background:var(--surface)}
+.rs .h{color:var(--muted);font-size:11px;margin-bottom:4px;white-space:nowrap}
+.from{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
 /* 2026-09-27 항목 링크 = 제자리 펼치기 */
 a.lk[aria-expanded="true"]{border-bottom-color:var(--ink2);font-weight:600}
 a.lk::after{content:"▾";font-size:10px;color:var(--faint);margin-left:3px;display:inline-block;transition:transform .2s var(--ease)}
@@ -182,15 +185,21 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--faint);f
   .wrap{padding:0 16px}
   header{padding:36px 0 12px}
   h1{font-size:30px}
-  .grid,.grid.wide{grid-template-columns:1fr 1fr;gap:8px}
+  .grid,.grid.wide{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
   .card{flex-direction:column;align-items:flex-start;gap:8px;padding:10px}
   .card.map{padding:0}
-  aside{top:auto;bottom:0;height:88vh;width:100%;border-left:0;border-top:1px solid var(--line);border-radius:14px 14px 0 0;transform:translateY(102%)}
+  aside{top:auto;bottom:0;height:88vh;height:88dvh;width:100%;border-left:0;border-top:1px solid var(--line);border-radius:14px 14px 0 0;transform:translateY(102%)}
   aside.on{transform:none}
-  .db{padding:18px 16px 60px}
+  .db{padding:18px 16px calc(60px + env(safe-area-inset-bottom))}
   .banner{margin:-18px -16px 16px}
-  .rs{font-size:11px}
+  .rs{grid-template-columns:repeat(4,1fr);font-size:11.5px}      /* 2026-09-27 360px 에서 「찌르기」가 쪼개져 4칸 × 2줄 */
   .bar .sp-switch span{display:none}
+  /* 2026-09-27 모바일 — 탭 줄이 옆으로 더 있음을 흐림으로 알리고, 누르기 쉬운 크기로 */
+  .bar .wrap{padding-right:36px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent)}
+  .search input{font-size:16px}                                /* iOS 는 16px 미만 입력칸을 누르면 확대한다 */
+  .chip{padding:7px 11px}
+  .sortbar button{padding:6px 9px}
+  .list li{padding:11px 0}
 }
 @media (prefers-reduced-motion:reduce){.card{animation:none;opacity:1;transform:none}aside,.scrim{transition:none}}
 </style>
@@ -431,7 +440,8 @@ function mapDetail(r){
   let h = (r.i ? `<div class="banner">${icon(r.i)}</div>` : "") + `<h2>${esc(r.n)}</h2><div class="sub" style="margin-top:4px">적 레벨 ${range(r.lv)}</div>`;
   if (r.en.length) h += `<h3>나오는 적</h3><ul class="list">${r.en.map(([n, a, b]) => `<li><span class="l">${link(n, "enemy")}</span><span class="r">Lv ${a === b ? a : `${a}–${b}`}</span></li>`).join("")}</ul>`;
   if (r.ch.length) h += `<h3>보물</h3>` + chestList(r.ch);
-  if (r.dr.length) h += `<h3>드롭 재료</h3><ul class="list">${r.dr.map(([n, from, b]) => `<li><span class="l">${link(n, "item", b === "boss")}</span><span class="r">${from.map(x => { const [n, note] = x.split(" · "); return link(n, "enemy") + (note ? ` <span class="muted">${esc(note)}</span>` : ""); }).join(", ")}</span></li>`).join("")}</ul>`;
+  // 2026-09-27 떨구는 적은 재료 아래 줄로 — 오른쪽 칸(nowrap)에 몰면 모바일에서 가로로 넘친다
+  if (r.dr.length) h += `<h3>드롭 재료</h3><ul class="list">${r.dr.map(([n, from, b]) => `<li><span class="l">${link(n, "item", b === "boss")}<span class="from">${from.map(x => { const [n, note] = x.split(" · "); return link(n, "enemy") + (note ? ` <span class="muted">(${esc(note)})</span>` : ""); }).join(", ")}</span></span></li>`).join("")}</ul>`;
   if (r.sh.length){
     const by = {}; r.sh.forEach(([shop, n, p, cur]) => (by[shop] = by[shop] || []).push([n, p, cur]));
     h += `<h3>상점</h3>` + Object.entries(by).map(([shop, xs]) => `<details class="fold"><summary>${esc(shop)} <span class="muted" style="font-weight:400;margin-left:auto;margin-right:12px">${xs.length}</span></summary><div class="in"><ul class="list">${xs.map(([n, p, cur]) => `<li><span class="l">${link(n, "item")}</span><span class="r">${num(p)} ${esc(cur === "Git" ? "Git" : cur)}</span></li>`).join("")}</ul></div></details>`).join("");
