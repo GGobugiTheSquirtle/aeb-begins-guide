@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>비긴즈 도감</title>
+<meta name="description" content="어나더에덴 비긴즈 비공식 도감 — 동료 · 장비 · 아이템 · 지역 · 적 · 퀘스트. 스토리 스포일러는 가려 둡니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{
+  --bg:#FBFBFA; --surface:#FFFFFF; --soft:#F7F6F3; --line:#EAEAEA; --line2:#F1F0EC;
+  --ink:#2F3437; --ink2:#111111; --muted:#787774; --faint:#A8A6A1;
+  --red:#FDEBEC; --redt:#9F2F2D; --blue:#E1F3FE; --bluet:#1F6C9F;
+  --green:#EDF3EC; --greent:#346538; --yellow:#FBF3DB; --yellowt:#956400;
+  --gray:#F1F1EF; --grayt:#5F5E5B;
+  --serif:"Noto Serif KR", serif; --sans:"Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --mono:"JetBrains Mono", "SF Mono", Consolas, monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 var(--sans);letter-spacing:-.005em}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(900px 500px at 12% -10%,rgba(214,196,160,.10),transparent 60%),
+             radial-gradient(700px 420px at 100% 0%,rgba(160,190,200,.08),transparent 60%)}
+a{color:inherit}
+button{font:inherit;color:inherit}
+.wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 24px}
+
+/* header */
+header{padding:56px 0 20px}
+.eyebrow{font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{font:700 40px/1.1 var(--serif);letter-spacing:-.03em;color:var(--ink2);margin:14px 0 10px}
+.lede{color:var(--muted);max-width:620px;margin:0}
+.bar{position:sticky;top:0;z-index:20;background:rgba(251,251,250,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;gap:6px;min-height:54px;overflow-x:auto;scrollbar-width:none}
+.bar .wrap::-webkit-scrollbar{display:none}
+.tab{border:0;background:none;padding:8px 12px;border-radius:6px;color:var(--muted);font-weight:600;white-space:nowrap;cursor:pointer}
+.tab:hover{color:var(--ink2);background:var(--soft)}
+.tab[aria-selected="true"]{color:var(--ink2);background:var(--surface);box-shadow:inset 0 0 0 1px var(--line)}
+.tab .c{font:500 11px var(--mono);color:var(--faint);margin-left:6px}
+.bar .sp-switch{margin-left:auto}
+
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:22px 0 8px}
+.search{flex:1 1 260px;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:0 12px;height:40px}
+.search input{border:0;outline:0;background:none;flex:1;font:inherit;color:var(--ink2);min-width:0}
+.search:focus-within{border-color:#CFCDC7}
+.sp-switch{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;font-size:13px;color:var(--muted);white-space:nowrap}
+.sp-switch input{appearance:none;width:34px;height:20px;border-radius:10px;background:#DCDAD4;position:relative;cursor:pointer;transition:background .2s var(--ease);margin:0}
+.sp-switch input::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .25s var(--ease)}
+.sp-switch input:checked{background:var(--ink2)}
+.sp-switch input:checked::after{transform:translateX(14px)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 2px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:5px 10px;font-size:13px;color:var(--muted);cursor:pointer}
+.chip:hover{color:var(--ink2)}
+.chip[aria-pressed="true"]{background:var(--ink2);border-color:var(--ink2);color:#fff}
+.count{font:500 12px var(--mono);color:var(--faint);padding:14px 0 10px}
+
+/* grid + cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:12px;padding-bottom:80px}
+.grid.wide{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.card{position:relative;display:flex;gap:12px;align-items:center;text-align:left;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;cursor:pointer;
+  transition:box-shadow .2s var(--ease),transform .2s var(--ease);opacity:0;transform:translateY(8px);animation:rise .5s var(--ease) forwards;animation-delay:calc(min(var(--i),24) * 18ms)}
+.card:hover{box-shadow:0 2px 10px rgba(0,0,0,.045)}
+.card:active{transform:scale(.99)}
+@keyframes rise{to{opacity:1;transform:none}}
+.ic{flex:0 0 48px;width:48px;height:48px;border-radius:8px;background:var(--soft);display:grid;place-items:center;overflow:hidden;font:700 18px var(--serif);color:var(--faint)}
+.ic img{width:100%;height:100%;object-fit:contain}
+.card.map{flex-direction:column;align-items:stretch;padding:0;overflow:hidden}
+.card.map .thumb{aspect-ratio:16/7;background:var(--soft);overflow:hidden}
+.card.map .thumb img{width:100%;height:100%;object-fit:cover;filter:saturate(.85)}
+.card.map .body{padding:12px 14px}
+.nm{font-weight:650;color:var(--ink2);line-height:1.35;word-break:keep-all}
+.sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.tag{display:inline-block;font:600 10.5px/1.5 var(--sans);letter-spacing:.03em;padding:1px 7px;border-radius:9999px;background:var(--gray);color:var(--grayt);white-space:nowrap}
+.t-불,.t-약점{background:var(--red);color:var(--redt)}
+.t-물,.t-흡수{background:var(--blue);color:var(--bluet)}
+.t-바람{background:var(--green);color:var(--greent)}
+.t-땅,.t-경감,.t-ng{background:var(--yellow);color:var(--yellowt)}
+.t-무효{background:var(--gray);color:var(--grayt)}
+/* veiled card */
+.card.veil .ic img,.card.veil .thumb img{filter:blur(10px) grayscale(.6)}
+.card.veil .nm,.card.veil .sub,.card.veil .tags{filter:blur(6px)}
+.card.veil::after{content:attr(data-veil);position:absolute;right:10px;top:10px;font:600 10.5px var(--sans);padding:2px 8px;border-radius:9999px;background:var(--ink2);color:#fff}
+body.spoil .card.veil .ic img,body.spoil .card.veil .thumb img,body.spoil .card.veil .nm,body.spoil .card.veil .sub,body.spoil .card.veil .tags{filter:none}
+body.spoil .card.veil::after{display:none}
+
+/* inline spoilers */
+.sp{filter:blur(5px);cursor:pointer;border-radius:3px;background:var(--soft);transition:filter .25s var(--ease)}
+.spb{position:relative;filter:blur(6px);cursor:pointer;user-select:none;transition:filter .25s var(--ease)}
+.spwrap{position:relative}
+.spwrap .hint{position:absolute;inset:0;display:grid;place-items:center;font-size:12.5px;color:var(--ink2);font-weight:600;pointer-events:none}
+.sp.shown,.spb.shown,body.spoil .sp,body.spoil .spb{filter:none;cursor:auto;user-select:auto}
+.spb.shown+.hint,body.spoil .spb+.hint{display:none}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(17,17,17,.18);opacity:0;pointer-events:none;transition:opacity .25s var(--ease);z-index:40}
+.scrim.on{opacity:1;pointer-events:auto}
+aside{position:fixed;z-index:50;top:0;right:0;height:100%;width:min(560px,100%);background:var(--surface);border-left:1px solid var(--line);
+  transform:translateX(102%);transition:transform .35s var(--ease);overflow-y:auto;overscroll-behavior:contain}
+aside.on{transform:none}
+.dh{position:sticky;top:0;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--line2);z-index:2}
+.dh .crumb{font:600 12px var(--sans);color:var(--muted)}
+.x{border:1px solid var(--line);background:var(--surface);border-radius:6px;width:32px;height:32px;cursor:pointer;display:grid;place-items:center}
+.x:hover{background:var(--soft)}
+.db{padding:22px 24px 60px}
+.hero{display:flex;gap:16px;align-items:center;margin-bottom:6px}
+.hero .ic{flex-basis:72px;width:72px;height:72px;border-radius:10px}
+.hero.pc .ic{flex-basis:96px;width:96px;height:96px}
+h2{font:700 26px/1.2 var(--serif);letter-spacing:-.02em;color:var(--ink2);margin:0}
+.hero .sub{font-size:13.5px}
+.banner{margin:-22px -24px 18px;aspect-ratio:16/6;overflow:hidden;background:var(--soft)}
+.banner img{width:100%;height:100%;object-fit:cover}
+h3{font:650 12.5px/1 var(--sans);letter-spacing:.01em;color:var(--muted);margin:28px 0 10px;padding-bottom:9px;border-bottom:1px solid var(--line2)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:1px;background:var(--line2);border:1px solid var(--line2);border-radius:8px;overflow:hidden;margin-top:16px}
+.stats div{background:var(--surface);padding:10px 12px}
+.stats b{display:block;font:500 16px var(--mono);color:var(--ink2)}
+.stats span{font-size:11.5px;color:var(--muted)}
+.prose{white-space:pre-line;color:var(--ink);margin:0}
+.muted{color:var(--muted)}
+.list{list-style:none;margin:0;padding:0}
+.list li{padding:9px 0;border-bottom:1px solid var(--line2);display:flex;gap:10px;align-items:baseline;justify-content:space-between}
+.list li:last-child{border-bottom:0}
+.list .l{min-width:0}
+.list .r{font:500 12.5px var(--sans);font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+a.lk{color:var(--ink2);text-decoration:none;border-bottom:1px solid #D7D5CF;cursor:pointer}
+a.lk:hover{border-bottom-color:var(--ink2)}
+.skill{padding:12px 0;border-bottom:1px solid var(--line2)}
+.skill:last-child{border-bottom:0}
+.skill .top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.skill .top b{color:var(--ink2)}
+.skill .mp{margin-left:auto;font:500 12px var(--mono);color:var(--muted)}
+.skill .d{white-space:pre-line;font-size:13.5px;margin-top:4px}
+.skill .ev{font-size:12px;color:var(--muted);margin-top:3px}
+details.fold{border-bottom:1px solid var(--line2)}
+details.fold summary{list-style:none;cursor:pointer;padding:10px 0;display:flex;justify-content:space-between;align-items:center;font-weight:600;color:var(--ink2)}
+details.fold summary::-webkit-details-marker{display:none}
+details.fold summary::after{content:"+";font:500 16px var(--mono);color:var(--muted)}
+details.fold[open] summary::after{content:"−"}
+details.fold .in{padding:0 0 12px;font-size:13.5px}
+.rs{display:grid;grid-template-columns:repeat(8,1fr);border:1px solid var(--line2);border-radius:8px;overflow:hidden;text-align:center;font-size:12px}
+.rs div{padding:8px 2px;border-right:1px solid var(--line2)}
+.rs div:last-child{border-right:0}
+.rs .h{color:var(--muted);font-size:11px;margin-bottom:4px}
+.empty{padding:60px 0;text-align:center;color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--faint);font-size:12.5px}
+.loading{padding:80px 0;text-align:center;color:var(--muted);font:500 12px var(--mono);letter-spacing:.1em}
+
+@media (max-width:760px){
+  .wrap{padding:0 16px}
+  header{padding:36px 0 12px}
+  h1{font-size:30px}
+  .grid,.grid.wide{grid-template-columns:1fr 1fr;gap:8px}
+  .card{flex-direction:column;align-items:flex-start;gap:8px;padding:10px}
+  .card.map{padding:0}
+  aside{top:auto;bottom:0;height:88vh;width:100%;border-left:0;border-top:1px solid var(--line);border-radius:14px 14px 0 0;transform:translateY(102%)}
+  aside.on{transform:none}
+  .db{padding:18px 16px 60px}
+  .banner{margin:-18px -16px 16px}
+  .rs{font-size:11px}
+  .bar .sp-switch span{display:none}
+}
+@media (prefers-reduced-motion:reduce){.card{animation:none;opacity:1;transform:none}aside,.scrim{transition:none}}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <div class="eyebrow">Another Eden Begins <span style="font-family:var(--sans);letter-spacing:0;text-transform:none">· 비공식 도감</span></div>
+  <h1>어나더에덴 비긴즈 도감</h1>
+  <p class="lede">동료 · 장비 · 아이템 · 지역 · 적 · 퀘스트를 게임 화면 기준으로 정리했습니다. 이야기와 관련된 내용은 흐리게 가려 두었습니다. 누르면 하나씩 보이고, 「스포일러 모두 보기」로 한 번에 펼칠 수 있습니다.</p>
+</header>
+<nav class="bar" aria-label="분류">
+  <div class="wrap" id="tabs" role="tablist"></div>
+</nav>
+<main class="wrap">
+  <div class="tools">
+    <label class="search"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="#787774" stroke-width="1.8"/><path d="M11 11l3.5 3.5" stroke="#787774" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <input id="q" type="search" placeholder="이름으로 찾기 (한국어 · 일본어)" autocomplete="off" aria-label="검색"></label>
+    <label class="sp-switch"><input type="checkbox" id="spoil"><span>스포일러 모두 보기</span></label>
+  </div>
+  <div id="chips"></div>
+  <div class="count" id="count"></div>
+  <div id="grid" class="grid"><div class="loading">불러오는 중</div></div>
+</main>
+<footer class="wrap">
+  비공식 팬 가이드입니다. 게임 정식판(Steam) 데이터를 기준으로 정리했으며, 게임 이미지와 명칭의 권리는 원저작자에게 있습니다.
+</footer>
+<div class="scrim" id="scrim"></div>
+<aside id="detail" aria-hidden="true" aria-label="상세"></aside>
+
+<script>
+(() => {
+const TABS = [
+  {id:"chars", n:"동료"}, {id:"equip", n:"장비"}, {id:"goods", n:"아이템 · 재료"},
+  {id:"maps", n:"지역"}, {id:"enemies", n:"적"}, {id:"quests", n:"퀘스트"}];
+const TAB_OF_ITEM = t => (t === "weapon" || t === "armor") ? "equip" : "goods";
+const KIND_N = {weapon:"무기", armor:"방어구", lunch:"도시락", item:"아이템", mat:"재료"};
+const VEIL_N = {boss:"스포일러 · 보스", ng:"스포일러 · 2회차", secret:"스포일러 · 숨은 제작법"};
+const RES = ["베기","찌르기","타격","마법","불","땅","바람","물"];
+const D = {}, K = {}, BYN = {item:{}, enemy:{}, map:{}, char:{}, quest:{}};
+const S = {tab:"chars", f:{}, q:"", spoil:false, seen:new Set()};
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const num = v => v == null ? "" : Number(v).toLocaleString("ko-KR");
+const range = r => !Array.isArray(r) ? num(r) : (r[0] === r[1] ? num(r[0]) : `${num(r[0])}–${num(r[1])}`);
+const store = {get(k){try{return localStorage.getItem(k)}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+// 〈장 부제〉 는 인라인 스포일러로
+const spText = s => esc(s).replace(/〈([^〉]*)〉/g, '<span class="sp" tabindex="0">〈$1〉</span>');
+const spBlock = s => s ? `<div class="spwrap"><p class="prose spb" tabindex="0">${esc(s)}</p><div class="hint">스포일러 — 눌러서 보기</div></div>` : "";
+const icon = (i, fb) => i ? `<img src="images/${esc(i)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : esc((fb || "?").slice(0,1));
+const tag = (t, cls) => `<span class="tag ${cls ? "t-" + cls : ""}">${esc(t)}</span>`;
+function link(name, type){
+  const r = BYN[type] && BYN[type][name];
+  return r ? `<a class="lk" data-k="${esc(r.k)}">${esc(name)}</a>` : esc(name);
+}
+const weak = e => Object.entries(e.rs || {}).filter(([,v]) => v.includes("약점")).map(([k]) => k);
+
+async function load(){
+  const names = ["chars","items","enemies","maps","quests"];
+  const got = await Promise.all(names.map(n => fetch(`data/${n}.json`).then(r => r.json())));
+  names.forEach((n, i) => D[n] = got[i]);
+  const put = (arr, type) => arr.forEach(r => { r._t = type; K[r.k] = r; if (!BYN[type][r.n]) BYN[type][r.n] = r; });
+  put(D.chars, "char"); put(D.items, "item"); put(D.enemies, "enemy"); put(D.maps, "map"); put(D.quests, "quest");
+}
+
+function rows(tab){
+  switch(tab){
+    case "chars": return D.chars;
+    case "equip": return D.items.filter(i => TAB_OF_ITEM(i.tab) === "equip");
+    case "goods": return D.items.filter(i => TAB_OF_ITEM(i.tab) === "goods");
+    default: return D[tab];
+  }
+}
+// 탭별 필터 칩 — [이름, 값 뽑기]
+const FACETS = {
+  chars:   [["무기", r => r.wt]],
+  equip:   [["구분", r => KIND_N[r.tab]], ["종류", r => r.g]],
+  goods:   [["구분", r => KIND_N[r.tab]], ["종류", r => r.g]],
+  enemies: [["분류", r => r.tabn], ["약점", r => weak(r)]],
+  quests:  [["종류", r => r.kind]],
+  maps:    []};
+function matches(r){
+  const q = S.q.trim().toLowerCase();
+  if (q && !(`${r.n} ${r.nj || ""}`.toLowerCase().includes(q))) return false;
+  const f = S.f[S.tab] || {};
+  return (FACETS[S.tab] || []).every(([fn, get]) => {
+    const want = f[fn]; if (!want) return true;
+    const v = get(r); return Array.isArray(v) ? v.includes(want) : v === want;
+  });
+}
+const veiled = r => r.sp && r.sp.length && !S.spoil && !S.seen.has(r.k);
+
+function renderTabs(){
+  const q = S.q.trim().toLowerCase();
+  $("#tabs").innerHTML = TABS.map(t => {
+    const n = rows(t.id).filter(r => !q || `${r.n} ${r.nj || ""}`.toLowerCase().includes(q)).length;
+    return `<button class="tab" role="tab" data-tab="${t.id}" aria-selected="${t.id === S.tab}">${t.n}<span class="c">${n}</span></button>`;
+  }).join("");
+}
+function renderChips(){
+  const all = rows(S.tab), f = S.f[S.tab] || (S.f[S.tab] = {});
+  $("#chips").innerHTML = (FACETS[S.tab] || []).map(([fn, get]) => {
+    // 첫 칩이 걸려 있으면 둘째 칩의 선택지는 그 안에서만
+    const base = FACETS[S.tab][0][0] === fn ? all : all.filter(r => { const w = f[FACETS[S.tab][0][0]]; if (!w) return true; const v = FACETS[S.tab][0][1](r); return Array.isArray(v) ? v.includes(w) : v === w; });
+    const vals = [...new Set(base.flatMap(r => { const v = get(r); return Array.isArray(v) ? v : [v]; }).filter(Boolean))];
+    if (fn === "약점") vals.sort((a, b) => RES.indexOf(a) - RES.indexOf(b));
+    if (vals.length < 2) return "";
+    return `<div class="chips" data-f="${esc(fn)}"><button class="chip" aria-pressed="${!f[fn]}" data-v="">${esc(fn)} 전체</button>` +
+      vals.map(v => `<button class="chip" aria-pressed="${f[fn] === v}" data-v="${esc(v)}">${esc(v)}</button>`).join("") + "</div>";
+  }).join("");
+}
+function card(r, i){
+  const vl = veiled(r) ? ` veil" data-veil="${esc(VEIL_N[r.sp[0]] || "스포일러")}` : "";
+  let sub = "", tags = "";
+  switch(r._t){
+    case "char": sub = [r.job, r.wt].filter(Boolean).join(" · "); if (r.ch) tags = tag(`제${r.ch}장 합류`); break;
+    case "item":
+      sub = [KIND_N[r.tab], r.g].filter(Boolean).join(" · ") + (r.v ? ` · ${r.tab === "armor" ? "방어력" : "공격력"} ${num(r.v)}` : "");
+      if (r.ab) tags = tag(r.ab); else if (r.fx) tags = tag(r.fx.split("\n")[0]);
+      break;
+    case "enemy": sub = `${r.tabn} · Lv ${range(r.lv)}`; tags = weak(r).map(w => tag(w, "약점")).join(""); break;
+    case "quest": sub = [r.where, r.lv ? `Lv ${r.lv}` : ""].filter(Boolean).join(" · "); tags = tag(r.kind); break;
+  }
+  if (r._t === "map") return `<button class="card map${vl}" style="--i:${i}" data-k="${esc(r.k)}"><div class="thumb">${r.i ? icon(r.i) : ""}</div><div class="body"><div class="nm">${esc(r.n)}</div><div class="sub">Lv ${range(r.lv)} · 적 ${r.en.length} · 보물 ${r.ch.length}</div></div></button>`;
+  return `<button class="card${vl}" style="--i:${i}" data-k="${esc(r.k)}">${r._t === "quest" ? "" : `<div class="ic">${icon(r.i, r.n)}</div>`}<div style="min-width:0"><div class="nm">${esc(r.n)}</div><div class="sub">${esc(sub)}</div>${tags ? `<div class="tags">${tags}</div>` : ""}</div></button>`;
+}
+function renderGrid(){
+  const list = rows(S.tab).filter(matches);
+  $("#count").textContent = `${list.length.toLocaleString("ko-KR")}개`;
+  const g = $("#grid");
+  g.className = "grid" + (S.tab === "maps" || S.tab === "quests" ? " wide" : "");
+  g.innerHTML = list.length ? list.map(card).join("") : `<div class="empty">조건에 맞는 항목이 없습니다.</div>`;
+}
+function render(){ renderTabs(); renderChips(); renderGrid(); }
+
+/* ---------------- 상세 ---------------- */
+function srcList(src){
+  if (!src || !src.length) return `<p class="muted">알려진 입수처가 없습니다.</p>`;
+  return `<ul class="list">${src.map(s => `<li><span class="l">${spText(s[1])}</span><span class="r">${esc(s[0])}${s[2] === "ng" ? " " + tag("2회차", "ng") : ""}</span></li>`).join("")}</ul>`;
+}
+function itemDetail(r){
+  const st = [];
+  if (r.v) st.push([num(r.v), r.tab === "armor" ? "방어력" : "공격력"]);
+  if (r.at) st.push([r.at, "공격 타입"]);
+  let h = `<div class="hero"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([KIND_N[r.tab], r.g].filter(Boolean).join(" · "))}</div></div></div>`;
+  if (st.length) h += `<div class="stats">${st.map(([v, l]) => `<div><b>${esc(v)}</b><span>${l}</span></div>`).join("")}</div>`;
+  if (r.ab) h += `<h3>어빌리티</h3><p class="prose"><b>${esc(r.ab)}</b><br>${esc(r.abd || "")}</p>`;
+  if (r.fx) h += `<h3>효과</h3><p class="prose">${esc(r.fx)}</p>`;
+  if (r.pc) h += `<h3>전용</h3><p class="prose">${link(r.pc, "char")} 전용</p>`;
+  if (r.d) h += `<h3>설명</h3><p class="prose">${esc(r.d)}</p>`;
+  h += `<h3>입수처</h3>${srcList(r.src)}`;
+  if (r.rc){
+    const rec = `<ul class="list">${r.rc.map(([mk, n]) => { const m = K[mk]; return `<li><span class="l">${m ? link(m.n, "item") : esc(mk)}</span><span class="r">× ${n}</span></li>`; }).join("")}</ul>`;
+    h += `<h3>제작 재료</h3>` + ((r.sp || []).includes("secret") ? `<div class="spwrap"><div class="spb" tabindex="0">${rec}</div><div class="hint">숨은 제작법 — 눌러서 보기</div></div>` : rec);
+  }
+  if (r.use) h += `<h3>이 재료로 만드는 것</h3><ul class="list">${r.use.map(k => { const u = K[k]; return u ? `<li><span class="l">${link(u.n, "item")}</span><span class="r">${esc(KIND_N[u.tab])}</span></li>` : ""; }).join("")}</ul>`;
+  if (r.gift) h += `<h3>선물로 주면</h3><ul class="list"><li><span class="l">${r.gift["좋음"].map(n => link(n, "char")).join(", ") || "—"}</span><span class="r">${tag("좋아함", "바람")}</span></li><li><span class="l">${r.gift["나쁨"].map(n => link(n, "char")).join(", ") || "—"}</span><span class="r">${tag("싫어함", "불")}</span></li></ul>`;
+  return h;
+}
+function charDetail(r){
+  let h = `<div class="hero pc"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.nj, r.job, r.wt].filter(Boolean).join(" · "))}</div>${r.like ? `<div class="tags">${tag("좋아하는 것 · " + r.like)}</div>` : ""}</div></div>`;
+  if (r.intro) h += `<p class="prose" style="margin-top:14px">${esc(r.intro)}</p>`;
+  if (r.join){
+    h += `<h3>합류</h3><ul class="list">` +
+      (r.join.quest ? `<li><span class="l">${link(r.join.quest, "quest")}</span><span class="r">퀘스트</span></li>` : "") +
+      (r.join.where ? `<li><span class="l">${link(r.join.where, "map")}</span><span class="r">장소</span></li>` : "") +
+      (r.join.cond ? `<li><span class="l">${spText(r.join.cond)}</span><span class="r">조건</span></li>` : "") + `</ul>` + spBlock(r.join.story);
+  }
+  if (r.skills && r.skills.length){
+    h += `<h3>스킬</h3>` + r.skills.map(s => `<div class="skill"><div class="top"><b>${esc(s.n)}</b>${s.el && s.el !== "무" ? tag(s.el, s.el) : ""}${s.t && s.t !== "액티브" ? tag(s.t) : ""}${s.chain ? tag(`체인 ${s.chain}`) : ""}${s.mp != null ? `<span class="mp">MP ${s.mp}</span>` : ""}</div>` +
+      (s.tr ? `<div class="ev">발동 조건 · ${esc(s.tr)}</div>` : "") + `<div class="d">${esc(s.d)}</div>` + (s.evo ? `<div class="ev">→ ${esc(s.evo)}(으)로 강화</div>` : "") + `</div>`).join("");
+  }
+  if (r.stacks) h += `<h3>고유 게이지</h3><ul class="list">${r.stacks.map(([n, mx, d]) => `<li><span class="l"><b>${esc(n)}</b> ${esc(d || "")}</span><span class="r">최대 ${esc(mx)}</span></li>`).join("")}</ul>`;
+  if (r.boards) h += `<h3>어빌리티 보드</h3>` + r.boards.map(b => `<details class="fold"><summary>${esc(b.n)}</summary><div class="in"><p class="prose muted">${esc(b.d)}</p><ul class="list">${b.nodes.map(([dp, n, d]) => `<li><span class="l"><b>${esc(n)}</b>${d && d !== n ? ` <span class="muted">${esc(d)}</span>` : ""}</span><span class="r">${dp} DP</span></li>`).join("")}</ul></div></details>`).join("");
+  if (r.good || r.bad) h += `<h3>선물</h3><ul class="list"><li><span class="l">${(r.good || []).map(n => link(n, "item")).join(", ") || "—"}</span><span class="r">${tag("좋아함", "바람")}</span></li><li><span class="l">${(r.bad || []).map(n => link(n, "item")).join(", ") || "—"}</span><span class="r">${tag("싫어함", "불")}</span></li></ul>`;
+  if (r.titles) h += `<h3>친밀도 칭호</h3><ul class="list">${r.titles.map(([t, q], i) => `<li><span class="l">${q ? link(q, "quest") : esc(t)}</span><span class="r">${i === 0 ? "처음부터" : `친밀도 ${i + 1}`}</span></li>`).join("")}</ul>`;
+  return h;
+}
+function enemyDetail(r){
+  let h = `<div class="hero"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.tabn, r.cat].filter(Boolean).join(" · "))}</div></div></div>`;
+  const st = [[range(r.lv), "레벨"], [range(r.hp), "HP"]];
+  if (r.exp != null) st.push([num(r.exp), "경험치"]);
+  if (r.gold != null) st.push([num(r.gold), "Git"]);
+  h += `<div class="stats">${st.map(([v, l]) => `<div><b>${esc(v)}</b><span>${l}</span></div>`).join("")}</div>`;
+  h += `<h3>약점 · 내성</h3><div class="rs">${RES.map(k => { const v = (r.rs || {})[k] || []; return `<div><div class="h">${k}</div>${v.length ? v.map(x => tag(x, x)).join(" ") : '<span class="muted">—</span>'}</div>`; }).join("")}</div>`;
+  if (r.dr || r.bd) h += `<h3>드롭</h3><ul class="list">${(r.dr || []).map(n => `<li><span class="l">${link(n, "item")}</span></li>`).join("")}${r.bd ? `<li><span class="l">${esc(r.bd)}</span><span class="r">배지</span></li>` : ""}</ul>`;
+  if (r.wh) h += `<h3>나오는 곳</h3><ul class="list">${[...new Set(r.wh)].map(n => `<li><span class="l">${link(n, "map")}</span></li>`).join("")}</ul>`;
+  else if (r.loc) h += `<h3>나오는 곳</h3><p class="prose">${esc(r.loc)}</p>`;
+  return h;
+}
+function mapDetail(r){
+  let h = (r.i ? `<div class="banner">${icon(r.i)}</div>` : "") + `<h2>${esc(r.n)}</h2><div class="sub" style="margin-top:4px">적 레벨 ${range(r.lv)}</div>`;
+  if (r.en.length) h += `<h3>나오는 적</h3><ul class="list">${r.en.map(([n, a, b]) => `<li><span class="l">${link(n, "enemy")}</span><span class="r">Lv ${a === b ? a : `${a}–${b}`}</span></li>`).join("")}</ul>`;
+  if (r.ch.length) h += `<h3>보물</h3><ul class="list">${r.ch.map(([n, c, ng]) => { const row = `${link(n, "item")}${c > 1 ? ` × ${num(c)}` : ""}`; return `<li><span class="l">${ng ? `<span class="sp" tabindex="0">${row}</span>` : row}</span><span class="r">${ng ? tag("2회차", "ng") : ""}</span></li>`; }).join("")}</ul>`;
+  if (r.dr.length) h += `<h3>드롭 재료</h3><ul class="list">${r.dr.map(([n, from]) => `<li><span class="l">${link(n, "item")}</span><span class="r">${from.map(x => link(x, "enemy")).join(", ")}</span></li>`).join("")}</ul>`;
+  if (r.sh.length){
+    const by = {}; r.sh.forEach(([shop, n, p, cur]) => (by[shop] = by[shop] || []).push([n, p, cur]));
+    h += `<h3>상점</h3>` + Object.entries(by).map(([shop, xs]) => `<details class="fold"><summary>${esc(shop)} <span class="muted" style="font-weight:400;margin-left:auto;margin-right:12px">${xs.length}</span></summary><div class="in"><ul class="list">${xs.map(([n, p, cur]) => `<li><span class="l">${link(n, "item")}</span><span class="r">${num(p)} ${esc(cur === "Git" ? "Git" : cur)}</span></li>`).join("")}</ul></div></details>`).join("");
+  }
+  return h;
+}
+function questDetail(r){
+  let h = `<h2>${esc(r.n)}</h2><div class="tags" style="margin-top:8px">${tag(r.kind)}${r.lv ? tag(`권장 Lv ${r.lv}`) : ""}</div>`;
+  h += `<ul class="list" style="margin-top:14px">` +
+    (r.where ? `<li><span class="l">${link(r.where, "map")}</span><span class="r">수주처</span></li>` : "") +
+    (r.cond ? `<li><span class="l">${spText(r.cond)}</span><span class="r">발생 조건</span></li>` : "") + `</ul>`;
+  if (r.story) h += `<h3>내용</h3>` + spBlock(r.story);
+  if (r.route && r.route.length) h += `<h3>경로</h3><p class="prose">${r.route.map(n => link(n, "map")).join(" → ")}</p>`;
+  if (r.rw && r.rw.length) h += `<h3>보상</h3><ul class="list">${r.rw.map(([n, a]) => `<li><span class="l">${link(n, "item")}</span><span class="r">× ${num(a)}</span></li>`).join("")}</ul>`;
+  return h;
+}
+const CRUMB = {char:"동료", item:"장비 · 아이템", enemy:"적", map:"지역", quest:"퀘스트"};
+function open(k, push){
+  const r = K[k]; if (!r) return;
+  S.seen.add(k);
+  const body = {char:charDetail, item:itemDetail, enemy:enemyDetail, map:mapDetail, quest:questDetail}[r._t](r);
+  const d = $("#detail");
+  d.innerHTML = `<div class="dh"><span class="crumb">${CRUMB[r._t]}</span><button class="x" data-close aria-label="닫기"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="#2F3437" stroke-width="1.8" stroke-linecap="round"/></svg></button></div><div class="db">${body}</div>`;
+  d.classList.add("on"); d.setAttribute("aria-hidden", "false"); d.scrollTop = 0;
+  $("#scrim").classList.add("on");
+  const tab = r._t === "item" ? TAB_OF_ITEM(r.tab) : {char:"chars", enemy:"enemies", map:"maps", quest:"quests"}[r._t];
+  if (push !== false) history.replaceState(null, "", `#${tab}/${encodeURIComponent(k)}`);
+  const c = document.querySelector(`.card[data-k="${CSS.escape(k)}"]`); if (c) c.classList.remove("veil");
+}
+function close(){
+  $("#detail").classList.remove("on"); $("#detail").setAttribute("aria-hidden", "true"); $("#scrim").classList.remove("on");
+  history.replaceState(null, "", `#${S.tab}`);
+}
+function setTab(t){ S.tab = t; window.scrollTo({top:0}); render(); history.replaceState(null, "", `#${t}`); }
+
+/* ---------------- 이벤트 ---------------- */
+document.addEventListener("click", e => {
+  const t = e.target;
+  const sp = t.closest(".sp,.spb"); if (sp && !S.spoil && !sp.classList.contains("shown")){ sp.classList.add("shown"); e.preventDefault(); return; }
+  const tb = t.closest(".tab"); if (tb){ setTab(tb.dataset.tab); return; }
+  const ch = t.closest(".chip"); if (ch){ const fn = ch.parentElement.dataset.f, f = S.f[S.tab] || (S.f[S.tab] = {}); f[fn] = ch.dataset.v || ""; if (FACETS[S.tab][0][0] === fn) delete f[FACETS[S.tab][1] && FACETS[S.tab][1][0]]; renderChips(); renderGrid(); return; }
+  const lk = t.closest("[data-k]");
+  if (lk){
+    e.preventDefault();
+    // 가린 카드는 첫 번째 누름에 가림만 걷는다 — 두 번째 누름에 연다
+    if (lk.classList.contains("veil") && !S.spoil){ S.seen.add(lk.dataset.k); lk.classList.remove("veil"); return; }
+    open(lk.dataset.k); return;
+  }
+  if (t.closest("[data-close]") || t.id === "scrim") close();
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") close();
+  if ((e.key === "Enter" || e.key === " ") && e.target.matches(".sp,.spb")) { e.target.classList.add("shown"); e.preventDefault(); }
+});
+let qt; $("#q").addEventListener("input", e => { clearTimeout(qt); qt = setTimeout(() => { S.q = e.target.value; renderTabs(); renderGrid(); }, 120); });
+$("#spoil").addEventListener("change", e => { S.spoil = e.target.checked; document.body.classList.toggle("spoil", S.spoil); store.set("aebg.spoil", S.spoil ? "1" : ""); renderGrid(); });
+
+(async () => {
+  S.spoil = store.get("aebg.spoil") === "1"; $("#spoil").checked = S.spoil; document.body.classList.toggle("spoil", S.spoil);
+  try { await load(); } catch(err){ $("#grid").innerHTML = `<div class="empty">데이터를 불러오지 못했습니다. 로컬에서 볼 때는 간단한 웹 서버로 여세요.</div>`; return; }
+  const [t, k] = decodeURIComponent(location.hash.slice(1)).split("/");
+  if (TABS.some(x => x.id === t)) S.tab = t;
+  render();
+  if (k) open(k, false);
+})();
+})();
+</script>
+</body>
+</html>
