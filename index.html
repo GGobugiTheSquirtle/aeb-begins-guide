@@ -405,7 +405,7 @@ function enemyDetail(r){
   if (r.exp != null) st.push([num(r.exp), "경험치"]);
   if (r.gold != null) st.push([num(r.gold), "Git"]);
   h += `<div class="stats">${st.map(([v, l]) => `<div><b>${esc(v)}</b><span>${l}</span></div>`).join("")}</div>`;
-  if (r.how && r.how.length){ const b = `<ul class="list">${r.how.map(x => `<li><span class="l">${spText(x)}</span></li>`).join("")}</ul>`;
+  if (r.meet && r.meet.length){ const b = `<ul class="list">${r.meet.map((x, i) => `<li><span class="l">${(r.hs || []).includes(i) ? veilSpan(esc(x)) : spText(x)}</span></li>`).join("")}</ul>`;
     h += `<h3>만나는 방법</h3>` + (r.hsp ? `<div class="spwrap"><div class="spb" tabindex="0">${b}</div><div class="hint">스포일러 — 눌러서 보기</div></div>` : b); }
   h += `<h3>약점 · 내성</h3><div class="rs">${RES.map(k => { const v = (r.rs || {})[k] || []; return `<div><div class="h">${k}</div>${v.length ? v.map(x => tag(x, x)).join(" ") : '<span class="muted">—</span>'}</div>`; }).join("")}</div>`;
   if (r.dr || r.bd) h += `<h3>드롭</h3><ul class="list">${(r.dr || []).map(n => `<li><span class="l">${link(n, "item")}</span></li>`).join("")}${r.bd ? `<li><span class="l">${esc(r.bd)}</span><span class="r">배지</span></li>` : ""}</ul>`;
@@ -459,7 +459,7 @@ function mini(r){
       body = kv([[range(r.lv), "Lv"], [range(r.hp), "HP"], [r.exp != null ? num(r.exp) : "", "경험치"], [r.gold != null ? num(r.gold) : "", "Git"]]);
       const rs = RES.flatMap(k => ((r.rs || {})[k] || []).map(v => tag(`${k} ${v}`, v))).join(" ");
       body += row("약점 · 내성", rs);
-      if (r.how && r.how.length) body += row("만나는 방법", r.hsp ? veilSpan(esc(r.how[0])) : spText(r.how[0]));
+      if (r.meet && r.meet.length) body += row("만나는 방법", r.hsp || (r.hs || []).includes(0) ? veilSpan(esc(r.meet[0])) : spText(r.meet[0]));
       body += row("드롭", (r.dr || []).map(n => link(n, "item")).join(", "));
       body += row("나오는 곳", [...new Set(r.wh || [])].map(n => link(n, "map")).join(", "));
       break; }
