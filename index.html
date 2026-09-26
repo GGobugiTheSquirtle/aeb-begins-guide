@@ -57,7 +57,14 @@ h1{font:700 40px/1.1 var(--serif);letter-spacing:-.03em;color:var(--ink2);margin
 .chip{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:5px 10px;font-size:13px;color:var(--muted);cursor:pointer}
 .chip:hover{color:var(--ink2)}
 .chip[aria-pressed="true"]{background:var(--ink2);border-color:var(--ink2);color:#fff}
-.count{font:500 12px var(--mono);color:var(--faint);padding:14px 0 10px}
+.count{font:500 12px var(--mono);color:var(--faint)}
+/* 2026-09-27 정렬 */
+.meta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:12px 0 10px}
+.sortbar{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.sortbar .lbl{font-size:12px;color:var(--faint);margin-right:4px}
+.sortbar button{border:0;background:none;padding:4px 8px;border-radius:6px;font-size:12.5px;color:var(--muted);cursor:pointer}
+.sortbar button:hover{color:var(--ink2);background:var(--soft)}
+.sortbar button[aria-pressed="true"]{color:var(--ink2);background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);font-weight:600}
 
 /* grid + cards */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:12px;padding-bottom:80px}
@@ -146,6 +153,27 @@ details.fold .in{padding:0 0 12px;font-size:13.5px}
 .rs div{padding:8px 2px;border-right:1px solid var(--line2)}
 .rs div:last-child{border-right:0}
 .rs .h{color:var(--muted);font-size:11px;margin-bottom:4px}
+/* 2026-09-27 항목 링크 = 제자리 펼치기 */
+a.lk[aria-expanded="true"]{border-bottom-color:var(--ink2);font-weight:600}
+a.lk::after{content:"▾";font-size:10px;color:var(--faint);margin-left:3px;display:inline-block;transition:transform .2s var(--ease)}
+a.lk[aria-expanded="true"]::after{transform:rotate(180deg)}
+.list li.peek,div.peek{display:block;padding:12px 14px;margin:2px 0 8px;background:var(--soft);border:1px solid var(--line2);border-radius:8px;font-size:13.5px;animation:peek .25s var(--ease)}
+.list li.peek{border-bottom:1px solid var(--line2)}
+@keyframes peek{from{opacity:0;transform:translateY(-4px)}}
+.peek .ph{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.peek .ph .ic{flex-basis:36px;width:36px;height:36px;border-radius:6px;background:var(--surface)}
+.peek .ph b{color:var(--ink2);font-size:14px}
+.peek .kv{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--muted);margin:4px 0}
+.peek .kv b{color:var(--ink2);font:500 12.5px var(--mono)}
+.peek .row{margin-top:6px}
+.peek .row>span:first-child{color:var(--muted);font-size:12px;margin-right:6px}
+.peek .more{margin-top:10px;border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:4px 10px;font-size:12px;color:var(--muted);cursor:pointer}
+.peek .more:hover{color:var(--ink2)}
+/* 2026-09-27 보물 = 구역별 */
+.grp{font-size:12px;font-weight:650;color:var(--ink2);margin:14px 0 2px}
+.grp:first-of-type{margin-top:4px}
+.note{font-size:12px;color:var(--faint);margin:-4px 0 6px}
+.lap2{display:block;margin-top:3px;font-size:13px}
 .empty{padding:60px 0;text-align:center;color:var(--muted)}
 footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--faint);font-size:12.5px}
 .loading{padding:80px 0;text-align:center;color:var(--muted);font:500 12px var(--mono);letter-spacing:.1em}
@@ -183,7 +211,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--faint);f
     <label class="sp-switch"><input type="checkbox" id="spoil"><span>스포일러 모두 보기</span></label>
   </div>
   <div id="chips"></div>
-  <div class="count" id="count"></div>
+  <div class="meta"><span class="count" id="count"></span><div class="sortbar" id="sort"></div></div>
   <div id="grid" class="grid"><div class="loading">불러오는 중</div></div>
 </main>
 <footer class="wrap">
@@ -202,7 +230,7 @@ const KIND_N = {weapon:"무기", armor:"방어구", lunch:"도시락", item:"아
 const VEIL_N = {boss:"스포일러 · 보스", ng:"스포일러 · 2회차", secret:"스포일러 · 숨은 제작법"};
 const RES = ["베기","찌르기","타격","마법","불","땅","바람","물"];
 const D = {}, K = {}, BYN = {item:{}, enemy:{}, map:{}, char:{}, quest:{}};
-const S = {tab:"chars", f:{}, q:"", spoil:false, seen:new Set()};
+const S = {tab:"chars", f:{}, q:"", spoil:false, seen:new Set(), sort:{}};
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const num = v => v == null ? "" : Number(v).toLocaleString("ko-KR");
@@ -214,9 +242,13 @@ const spText = s => esc(s).replace(/〈([^〉]*)〉/g, '<span class="sp" tabinde
 const spBlock = s => s ? `<div class="spwrap"><p class="prose spb" tabindex="0">${esc(s)}</p><div class="hint">스포일러 — 눌러서 보기</div></div>` : "";
 const icon = (i, fb) => i ? `<img src="images/${esc(i)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : esc((fb || "?").slice(0,1));
 const tag = (t, cls) => `<span class="tag ${cls ? "t-" + cls : ""}">${esc(t)}</span>`;
-function link(name, type){
+// 2026-09-27 항목 링크는 누르면 그 자리에서 펼친다(data-p). 가린 항목(r.sp) · veil 지정은 한 겹만 흐리게
+const veilSpan = h => `<span class="sp" tabindex="0">${h}</span>`;
+function link(name, type, veil){
   const r = BYN[type] && BYN[type][name];
-  return r ? `<a class="lk" data-k="${esc(r.k)}">${esc(name)}</a>` : esc(name);
+  if (!r) return veil ? veilSpan(esc(name)) : esc(name);
+  const a = `<a class="lk" data-p="${esc(r.k)}" role="button" tabindex="0" aria-expanded="false">${esc(name)}</a>`;
+  return veil || (r.sp && r.sp.length && !S.seen.has(r.k)) ? veilSpan(a) : a;
 }
 const weak = e => Object.entries(e.rs || {}).filter(([,v]) => v.includes("약점")).map(([k]) => k);
 
@@ -254,6 +286,31 @@ function matches(r){
   });
 }
 const veiled = r => r.sp && r.sp.length && !S.spoil && !S.seen.has(r.k);
+// 2026-09-27 탭별 정렬 — [이름, 값 뽑기, 처음 누를 때 방향(1 오름 · -1 내림)]. 값이 없는 항목은 방향과 무관하게 뒤로
+const lo = v => Array.isArray(v) ? v[0] : v, hi = v => Array.isArray(v) ? v[v.length - 1] : v;
+const SORTS = {
+  chars:   [["합류 장", r => r.ch, 1], ["이름", r => r.n, 1]],
+  equip:   [["공격력 · 방어력", r => r.v, -1], ["이름", r => r.n, 1]],
+  goods:   [["이름", r => r.n, 1]],
+  maps:    [["적 레벨", r => lo(r.lv), 1], ["이름", r => r.n, 1]],
+  enemies: [["레벨", r => lo(r.lv), 1], ["HP", r => hi(r.hp), -1], ["경험치", r => r.exp, -1], ["Git", r => r.gold, -1], ["이름", r => r.n, 1]],
+  quests:  [["권장 레벨", r => r.lv, 1], ["이름", r => r.n, 1]]};
+function sorted(list){
+  const st = S.sort[S.tab]; if (!st) return list;
+  const [, get] = SORTS[S.tab][st[0]], dir = st[1];
+  return list.map((r, i) => [r, get(r), i]).sort((a, b) => {
+    const x = a[1], y = b[1], nx = x == null || x === "", ny = y == null || y === "";
+    if (nx || ny) return nx - ny || a[2] - b[2];
+    const c = typeof x === "string" ? x.localeCompare(y, "ko") : x - y;
+    return c * dir || a[2] - b[2];
+  }).map(t => t[0]);
+}
+function renderSort(){
+  const st = S.sort[S.tab];
+  $("#sort").innerHTML = `<span class="lbl">정렬</span><button data-s="-1" aria-pressed="${!st}">기본</button>` +
+    (SORTS[S.tab] || []).map(([n, , d], i) => { const on = st && st[0] === i; const dir = on ? st[1] : d;
+      return `<button data-s="${i}" aria-pressed="${!!on}" title="${dir > 0 ? "낮은 순 · 가나다순" : "높은 순"}">${esc(n)}${on ? (dir > 0 ? " ↑" : " ↓") : ""}</button>`; }).join("");
+}
 
 function renderTabs(){
   const q = S.q.trim().toLowerCase();
@@ -283,25 +340,25 @@ function card(r, i){
       sub = [KIND_N[r.tab], r.g].filter(Boolean).join(" · ") + (r.v ? ` · ${r.tab === "armor" ? "방어력" : "공격력"} ${num(r.v)}` : "");
       if (r.ab) tags = tag(r.ab); else if (r.fx) tags = tag(r.fx.split("\n")[0]);
       break;
-    case "enemy": sub = `${r.tabn} · Lv ${range(r.lv)}`; tags = weak(r).map(w => tag(w, "약점")).join(""); break;
+    case "enemy": sub = `${esub(r)} · Lv ${range(r.lv)}`; tags = weak(r).map(w => tag(w, "약점")).join(""); break;
     case "quest": sub = [r.where, r.lv ? `Lv ${r.lv}` : ""].filter(Boolean).join(" · "); tags = tag(r.kind); break;
   }
-  if (r._t === "map") return `<button class="card map${vl}" style="--i:${i}" data-k="${esc(r.k)}"><div class="thumb">${r.i ? icon(r.i) : ""}</div><div class="body"><div class="nm">${esc(r.n)}</div><div class="sub">Lv ${range(r.lv)} · 적 ${r.en.length} · 보물 ${r.ch.length}</div></div></button>`;
+  if (r._t === "map") return `<button class="card map${vl}" style="--i:${i}" data-k="${esc(r.k)}"><div class="thumb">${r.i ? icon(r.i) : ""}</div><div class="body"><div class="nm">${esc(r.n)}</div><div class="sub">Lv ${range(r.lv)} · 적 ${r.en.length} · 보물 ${r.ch.filter(c => c.o !== "이벤트").length}</div></div></button>`;
   return `<button class="card${vl}" style="--i:${i}" data-k="${esc(r.k)}">${r._t === "quest" ? "" : `<div class="ic">${icon(r.i, r.n)}</div>`}<div style="min-width:0"><div class="nm">${esc(r.n)}</div><div class="sub">${esc(sub)}</div>${tags ? `<div class="tags">${tags}</div>` : ""}</div></button>`;
 }
 function renderGrid(){
-  const list = rows(S.tab).filter(matches);
+  const list = sorted(rows(S.tab).filter(matches));
   $("#count").textContent = `${list.length.toLocaleString("ko-KR")}개`;
   const g = $("#grid");
   g.className = "grid" + (S.tab === "maps" || S.tab === "quests" ? " wide" : "");
   g.innerHTML = list.length ? list.map(card).join("") : `<div class="empty">조건에 맞는 항목이 없습니다.</div>`;
 }
-function render(){ renderTabs(); renderChips(); renderGrid(); }
+function render(){ renderTabs(); renderChips(); renderSort(); renderGrid(); }
 
 /* ---------------- 상세 ---------------- */
 function srcList(src){
   if (!src || !src.length) return `<p class="muted">알려진 입수처가 없습니다.</p>`;
-  return `<ul class="list">${src.map(s => `<li><span class="l">${spText(s[1])}</span><span class="r">${esc(s[0])}${s[2] === "ng" ? " " + tag("2회차", "ng") : ""}</span></li>`).join("")}</ul>`;
+  return `<ul class="list">${src.map(s => `<li><span class="l">${s[2] === "boss" ? veilSpan(esc(s[1])) : spText(s[1])}</span><span class="r">${esc(s[0])}${s[2] === "ng" ? " " + tag("2회차", "ng") : ""}</span></li>`).join("")}</ul>`;
 }
 function itemDetail(r){
   const st = [];
@@ -341,23 +398,40 @@ function charDetail(r){
   if (r.titles) h += `<h3>친밀도 칭호</h3><ul class="list">${r.titles.map(([t, q], i) => `<li><span class="l">${q ? link(q, "quest") : esc(t)}</span><span class="r">${i === 0 ? "처음부터" : `친밀도 ${i + 1}`}</span></li>`).join("")}</ul>`;
   return h;
 }
+const esub = r => [r.tabn, r.cat].filter((x, i, a) => x && a.indexOf(x) === i).join(" · ");   // 「FEAR · FEAR」 같은 겹침 제거
 function enemyDetail(r){
-  let h = `<div class="hero"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.tabn, r.cat].filter(Boolean).join(" · "))}</div></div></div>`;
+  let h = `<div class="hero"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc(esub(r))}</div></div></div>`;
   const st = [[range(r.lv), "레벨"], [range(r.hp), "HP"]];
   if (r.exp != null) st.push([num(r.exp), "경험치"]);
   if (r.gold != null) st.push([num(r.gold), "Git"]);
   h += `<div class="stats">${st.map(([v, l]) => `<div><b>${esc(v)}</b><span>${l}</span></div>`).join("")}</div>`;
+  if (r.how && r.how.length){ const b = `<ul class="list">${r.how.map(x => `<li><span class="l">${spText(x)}</span></li>`).join("")}</ul>`;
+    h += `<h3>만나는 방법</h3>` + (r.hsp ? `<div class="spwrap"><div class="spb" tabindex="0">${b}</div><div class="hint">스포일러 — 눌러서 보기</div></div>` : b); }
   h += `<h3>약점 · 내성</h3><div class="rs">${RES.map(k => { const v = (r.rs || {})[k] || []; return `<div><div class="h">${k}</div>${v.length ? v.map(x => tag(x, x)).join(" ") : '<span class="muted">—</span>'}</div>`; }).join("")}</div>`;
   if (r.dr || r.bd) h += `<h3>드롭</h3><ul class="list">${(r.dr || []).map(n => `<li><span class="l">${link(n, "item")}</span></li>`).join("")}${r.bd ? `<li><span class="l">${esc(r.bd)}</span><span class="r">배지</span></li>` : ""}</ul>`;
   if (r.wh) h += `<h3>나오는 곳</h3><ul class="list">${[...new Set(r.wh)].map(n => `<li><span class="l">${link(n, "map")}</span></li>`).join("")}</ul>`;
   else if (r.loc) h += `<h3>나오는 곳</h3><p class="prose">${esc(r.loc)}</p>`;
   return h;
 }
+// 2026-09-27 보물 — 구역별 묶음. c[0] = 1회차(또는 회차 무관), c[1] = 2회차~ 내용물(가림). lap2 = 2회차~에만 주는 이벤트 보상
+function chestList(ch){
+  const amt = ([n, c]) => c > 1 ? ` × ${num(c)}` : "";
+  const groups = [];
+  ch.forEach(c => { const a = c.a || (c.o === "이벤트" ? "이벤트 보상" : "");
+    let g = groups.find(x => x.a === a); if (!g) groups.push(g = {a, rows:[]}); g.rows.push(c); });
+  const row = c => {
+    const first = c.lap2 ? `${tag("2회차~", "ng")} ${link(c.c[0][0], "item", true)}${amt(c.c[0])}` : `${link(c.c[0][0], "item", !!c.sp)}${amt(c.c[0])}`;
+    const second = c.c[1] ? `<span class="lap2">${tag("2회차~", "ng")} ${link(c.c[1][0], "item", true)}${amt(c.c[1])}</span>` : "";
+    return `<li><span class="l">${first}${second}</span><span class="r">${esc(c.o)}</span></li>`;
+  };
+  const note = ch.some(c => /\(\d+\/\d+\)/.test(c.a || "")) ? `<p class="note">(1/4) = 이름이 같은 구역 가운데 몇 번째인지 · 대체로 입구 쪽부터</p>` : "";
+  return note + groups.map(g => (g.a ? `<div class="grp">${esc(g.a)}</div>` : "") + `<ul class="list">${g.rows.map(row).join("")}</ul>`).join("");
+}
 function mapDetail(r){
   let h = (r.i ? `<div class="banner">${icon(r.i)}</div>` : "") + `<h2>${esc(r.n)}</h2><div class="sub" style="margin-top:4px">적 레벨 ${range(r.lv)}</div>`;
   if (r.en.length) h += `<h3>나오는 적</h3><ul class="list">${r.en.map(([n, a, b]) => `<li><span class="l">${link(n, "enemy")}</span><span class="r">Lv ${a === b ? a : `${a}–${b}`}</span></li>`).join("")}</ul>`;
-  if (r.ch.length) h += `<h3>보물</h3><ul class="list">${r.ch.map(([n, c, ng]) => { const row = `${link(n, "item")}${c > 1 ? ` × ${num(c)}` : ""}`; return `<li><span class="l">${ng ? `<span class="sp" tabindex="0">${row}</span>` : row}</span><span class="r">${ng ? tag("2회차", "ng") : ""}</span></li>`; }).join("")}</ul>`;
-  if (r.dr.length) h += `<h3>드롭 재료</h3><ul class="list">${r.dr.map(([n, from]) => `<li><span class="l">${link(n, "item")}</span><span class="r">${from.map(x => link(x, "enemy")).join(", ")}</span></li>`).join("")}</ul>`;
+  if (r.ch.length) h += `<h3>보물</h3>` + chestList(r.ch);
+  if (r.dr.length) h += `<h3>드롭 재료</h3><ul class="list">${r.dr.map(([n, from, b]) => `<li><span class="l">${link(n, "item", b === "boss")}</span><span class="r">${from.map(x => { const [n, note] = x.split(" · "); return link(n, "enemy") + (note ? ` <span class="muted">${esc(note)}</span>` : ""); }).join(", ")}</span></li>`).join("")}</ul>`;
   if (r.sh.length){
     const by = {}; r.sh.forEach(([shop, n, p, cur]) => (by[shop] = by[shop] || []).push([n, p, cur]));
     h += `<h3>상점</h3>` + Object.entries(by).map(([shop, xs]) => `<details class="fold"><summary>${esc(shop)} <span class="muted" style="font-weight:400;margin-left:auto;margin-right:12px">${xs.length}</span></summary><div class="in"><ul class="list">${xs.map(([n, p, cur]) => `<li><span class="l">${link(n, "item")}</span><span class="r">${num(p)} ${esc(cur === "Git" ? "Git" : cur)}</span></li>`).join("")}</ul></div></details>`).join("");
@@ -373,6 +447,62 @@ function questDetail(r){
   if (r.route && r.route.length) h += `<h3>경로</h3><p class="prose">${r.route.map(n => link(n, "map")).join(" → ")}</p>`;
   if (r.rw && r.rw.length) h += `<h3>보상</h3><ul class="list">${r.rw.map(([n, a]) => `<li><span class="l">${link(n, "item")}</span><span class="r">× ${num(a)}</span></li>`).join("")}</ul>`;
   return h;
+}
+/* ---------------- 제자리 펼치기 (2026-09-27) ---------------- */
+function mini(r){
+  const kv = xs => `<div class="kv">${xs.filter(x => x[0] !== "" && x[0] != null).map(([v, l]) => `<span>${l} <b>${esc(v)}</b></span>`).join("")}</div>`;
+  const row = (l, h) => h ? `<div class="row"><span>${l}</span>${h}</div>` : "";
+  let sub = "", body = "";
+  switch(r._t){
+    case "enemy": {
+      sub = esub(r);
+      body = kv([[range(r.lv), "Lv"], [range(r.hp), "HP"], [r.exp != null ? num(r.exp) : "", "경험치"], [r.gold != null ? num(r.gold) : "", "Git"]]);
+      const rs = RES.flatMap(k => ((r.rs || {})[k] || []).map(v => tag(`${k} ${v}`, v))).join(" ");
+      body += row("약점 · 내성", rs);
+      if (r.how && r.how.length) body += row("만나는 방법", r.hsp ? veilSpan(esc(r.how[0])) : spText(r.how[0]));
+      body += row("드롭", (r.dr || []).map(n => link(n, "item")).join(", "));
+      body += row("나오는 곳", [...new Set(r.wh || [])].map(n => link(n, "map")).join(", "));
+      break; }
+    case "item": {
+      sub = [KIND_N[r.tab], r.g].filter(Boolean).join(" · ");
+      body = kv([[r.v ? num(r.v) : "", r.tab === "armor" ? "방어력" : "공격력"], [r.at || "", "공격 타입"]]);
+      if (r.ab) body += row("어빌리티", `<b>${esc(r.ab)}</b> ${esc(r.abd || "")}`);
+      if (r.fx) body += row("효과", esc(r.fx.split("\n")[0]));
+      const src = r.src || [];
+      body += row("입수처", src.slice(0, 3).map(s => `${s[2] === "boss" ? veilSpan(esc(s[1])) : spText(s[1])} <span class="muted">${esc(s[0])}</span>`).join("<br>") + (src.length > 3 ? `<br><span class="muted">외 ${src.length - 3}곳</span>` : ""));
+      if (r.rc) body += row("제작 재료", (r.sp || []).includes("secret") ? veilSpan(r.rc.map(([mk, n]) => `${esc((K[mk] || {}).n || mk)} × ${n}`).join(", ")) : r.rc.map(([mk, n]) => `${K[mk] ? link(K[mk].n, "item") : esc(mk)} × ${n}`).join(", "));
+      break; }
+    case "char":
+      sub = [r.job, r.wt].filter(Boolean).join(" · ");
+      if (r.join) body = row("합류", [r.join.where ? link(r.join.where, "map") : "", r.join.cond ? spText(r.join.cond) : ""].filter(Boolean).join(" · "));
+      break;
+    case "quest":
+      sub = [r.kind, r.lv ? `권장 Lv ${r.lv}` : ""].filter(Boolean).join(" · ");
+      body = row("수주처", r.where ? link(r.where, "map") : "") + row("발생 조건", r.cond ? spText(r.cond) : "") +
+        row("보상", (r.rw || []).map(([n, a]) => `${link(n, "item")}${a > 1 ? ` × ${num(a)}` : ""}`).join(", "));
+      break;
+    case "map":
+      sub = `적 레벨 ${range(r.lv)}`;
+      body = kv([[r.en.length, "적"], [r.ch.filter(c => c.o !== "이벤트").length, "보물"], [r.sh.length, "상점 품목"]]);
+      break;
+  }
+  const ic = r._t === "quest" ? "" : `<div class="ic">${icon(r.i, r.n)}</div>`;
+  return `<div class="ph">${ic}<div><b>${esc(r.n)}</b><div class="sub">${esc(sub)}</div></div></div>${body}<button class="more" data-k="${esc(r.k)}">전체 보기 →</button>`;
+}
+function peek(a){
+  const k = a.dataset.p, r = K[k]; if (!r) return;
+  const host = a.closest("li, p") || a.parentElement;
+  let s = host.nextElementSibling;
+  while (s && s.classList.contains("peek")){
+    if (s.dataset.for === k){ s.remove(); a.setAttribute("aria-expanded", "false"); return; }
+    s = s.nextElementSibling;
+  }
+  S.seen.add(k);
+  const el = document.createElement(host.tagName === "LI" ? "li" : "div");
+  el.className = "peek"; el.dataset.for = k; el.innerHTML = mini(r);
+  let after = host; while (after.nextElementSibling && after.nextElementSibling.classList.contains("peek")) after = after.nextElementSibling;
+  after.after(el);
+  a.setAttribute("aria-expanded", "true");
 }
 const CRUMB = {char:"동료", item:"장비 · 아이템", enemy:"적", map:"지역", quest:"퀘스트"};
 function open(k, push){
@@ -399,6 +529,10 @@ document.addEventListener("click", e => {
   const sp = t.closest(".sp,.spb"); if (sp && !S.spoil && !sp.classList.contains("shown")){ sp.classList.add("shown"); e.preventDefault(); return; }
   const tb = t.closest(".tab"); if (tb){ setTab(tb.dataset.tab); return; }
   const ch = t.closest(".chip"); if (ch){ const fn = ch.parentElement.dataset.f, f = S.f[S.tab] || (S.f[S.tab] = {}); f[fn] = ch.dataset.v || ""; if (FACETS[S.tab][0][0] === fn) delete f[FACETS[S.tab][1] && FACETS[S.tab][1][0]]; renderChips(); renderGrid(); return; }
+  const so = t.closest("[data-s]"); if (so){ const i = +so.dataset.s, st = S.sort[S.tab];   // 같은 기준을 다시 누르면 방향만 뒤집는다
+    if (i < 0) delete S.sort[S.tab]; else S.sort[S.tab] = st && st[0] === i ? [i, -st[1]] : [i, SORTS[S.tab][i][2]];
+    renderSort(); renderGrid(); return; }
+  const pk = t.closest("[data-p]"); if (pk){ e.preventDefault(); peek(pk); return; }
   const lk = t.closest("[data-k]");
   if (lk){
     e.preventDefault();
@@ -411,6 +545,7 @@ document.addEventListener("click", e => {
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") close();
   if ((e.key === "Enter" || e.key === " ") && e.target.matches(".sp,.spb")) { e.target.classList.add("shown"); e.preventDefault(); }
+  else if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-p]")) { peek(e.target); e.preventDefault(); }
 });
 let qt; $("#q").addEventListener("input", e => { clearTimeout(qt); qt = setTimeout(() => { S.q = e.target.value; renderTabs(); renderGrid(); }, 120); });
 $("#spoil").addEventListener("change", e => { S.spoil = e.target.checked; document.body.classList.toggle("spoil", S.spoil); store.set("aebg.spoil", S.spoil ? "1" : ""); renderGrid(); });
