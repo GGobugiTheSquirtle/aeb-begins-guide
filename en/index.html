@@ -1,16 +1,16 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>비긴즈 도감</title>
-<meta name="description" content="어나더에덴 비긴즈 비공식 도감 — 동료 · 장비 · 아이템 · 지역 · 적 · 퀘스트 · 배지 · 고양이 · 기억. 스토리 스포일러는 가려 둡니다.">
-<!-- 2026-09-27 링크 공유 미리보기 -->
+<title>Begins Codex</title>
+<meta name="description" content="Unofficial Another Eden Begins codex — allies, equipment, items, areas, enemies, quests, badges, cats and memories. Story spoilers are hidden.">
+
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ko_KR">
-<meta property="og:title" content="어나더에덴 비긴즈 도감">
-<meta property="og:description" content="동료 · 장비 · 아이템 · 지역 · 적 · 퀘스트 · 배지 · 고양이 · 기억을 게임 화면 기준으로 정리한 비공식 도감. 보물 위치 · FEAR 만나는 방법 · 입수처, 스토리 스포일러는 가려 둡니다.">
-<meta property="og:url" content="https://ggobugithesquirtle.github.io/aeb-begins-guide/">
+<meta property="og:title" content="Another Eden Begins Codex">
+<meta property="og:description" content="Unofficial codex of allies, equipment, items, areas, enemies, quests, badges, cats and memories, using the game's official English text. Treasure locations, how to meet FEARs, where to get items — story spoilers are hidden.">
+<meta property="og:url" content="https://ggobugithesquirtle.github.io/aeb-begins-guide/en/">
 <meta name="theme-color" content="#FBFBFA">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23111111'/%3E%3Ctext x='16' y='22.5' font-size='17' font-weight='700' text-anchor='middle' fill='%23ffffff' font-family='serif'%3E%EB%8F%84%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -69,7 +69,7 @@ h1{font:700 40px/1.1 var(--serif);letter-spacing:-.03em;color:var(--ink2);margin
 .chip[aria-pressed="true"]{background:var(--ink2);border-color:var(--ink2);color:#fff}
 .fsel{height:34px;max-width:100%;border:1px solid var(--line);border-radius:6px;background:var(--surface);font:inherit;font-size:13px;padding:0 10px;color:var(--ink2);cursor:pointer}
 .count{font:500 12px var(--mono);color:var(--faint)}
-/* 2026-09-27 정렬 */
+
 .meta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:12px 0 10px}
 .sortbar{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
 .sortbar .lbl{font-size:12px;color:var(--faint);margin-right:4px}
@@ -95,14 +95,14 @@ h1{font:700 40px/1.1 var(--serif);letter-spacing:-.03em;color:var(--ink2);margin
 .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
 .tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
 .tag{display:inline-block;font:600 10.5px/1.5 var(--sans);letter-spacing:.03em;padding:1px 7px;border-radius:9999px;background:var(--gray);color:var(--grayt);white-space:nowrap}
-.card .tag,.hero .tag{max-width:100%;white-space:normal;border-radius:6px;text-align:left}   /* 2026-09-27 도시락 효과 · 좋아하는 것처럼 긴 태그는 줄바꿈(말줄임은 차이를 가린다) */
+.card .tag,.hero .tag{max-width:100%;white-space:normal;border-radius:6px;text-align:left}   
 .card>div:not(.ic){max-width:100%}
 .hero>div:not(.ic){min-width:0}
-.t-불,.t-약점{background:var(--red);color:var(--redt)}
-.t-물,.t-흡수{background:var(--blue);color:var(--bluet)}
-.t-바람{background:var(--green);color:var(--greent)}
-.t-땅,.t-경감,.t-ng{background:var(--yellow);color:var(--yellowt)}
-.t-무효{background:var(--gray);color:var(--grayt)}
+.t-Fire,.t-Weak{background:var(--red);color:var(--redt)}
+.t-Water,.t-Absorbs{background:var(--blue);color:var(--bluet)}
+.t-Wind{background:var(--green);color:var(--greent)}
+.t-Earth,.t-Resist,.t-ng{background:var(--yellow);color:var(--yellowt)}
+.t-Immune{background:var(--gray);color:var(--grayt)}
 /* veiled card */
 .card.veil .ic img,.card.veil .thumb img{filter:blur(10px) grayscale(.6)}
 .card.veil .nm,.card.veil .sub,.card.veil .tags{filter:blur(6px)}
@@ -167,7 +167,7 @@ details.fold .in{padding:0 0 12px;font-size:13.5px}
 .rs>div{padding:8px 2px;background:var(--surface)}
 .rs .h{color:var(--muted);font-size:11px;margin-bottom:4px;white-space:nowrap}
 .from{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
-/* 2026-09-27 항목 링크 = 제자리 펼치기 */
+
 a.lk[aria-expanded="true"]{border-bottom-color:var(--ink2);font-weight:600}
 a.lk::after{content:"▾";font-size:10px;color:var(--faint);margin-left:3px;display:inline-block;transition:transform .2s var(--ease)}
 a.lk[aria-expanded="true"]::after{transform:rotate(180deg)}
@@ -183,7 +183,7 @@ a.lk[aria-expanded="true"]::after{transform:rotate(180deg)}
 .peek .row>span:first-child{color:var(--muted);font-size:12px;margin-right:6px}
 .peek .more{margin-top:10px;border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:4px 10px;font-size:12px;color:var(--muted);cursor:pointer}
 .peek .more:hover{color:var(--ink2)}
-/* 2026-09-27 보물 = 구역별 */
+
 .grp{font-size:12px;font-weight:650;color:var(--ink2);margin:14px 0 2px}
 .grp:first-of-type{margin-top:4px}
 .note{font-size:12px;color:var(--faint);margin:-4px 0 6px}
@@ -203,11 +203,11 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--faint);f
   aside.on{transform:none}
   .db{padding:18px 16px calc(60px + env(safe-area-inset-bottom))}
   .banner{margin:-18px -16px 16px}
-  .rs{grid-template-columns:repeat(4,1fr);font-size:11.5px}      /* 2026-09-27 360px 에서 「찌르기」가 쪼개져 4칸 × 2줄 */
+  .rs{grid-template-columns:repeat(4,1fr);font-size:11.5px}      
   .bar .sp-switch span{display:none}
-  /* 2026-09-27 모바일 — 탭 줄이 옆으로 더 있음을 흐림으로 알리고, 누르기 쉬운 크기로 */
+  
   .bar .wrap{padding-right:36px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent)}
-  .search input,.fsel{font-size:16px}                          /* iOS 는 16px 미만 입력칸을 누르면 확대한다 */
+  .search input,.fsel{font-size:16px}                          
   .chip{padding:7px 11px}
   .sortbar button{padding:6px 9px}
   .list li{padding:11px 0}
@@ -217,61 +217,61 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--faint);f
 </head>
 <body>
 <header class="wrap">
-  <div class="eyebrow">Another Eden Begins <span style="font-family:var(--sans);letter-spacing:0;text-transform:none">· 비공식 도감</span><a class="lang" href="en/">English</a></div>
-  <h1>어나더에덴 비긴즈 도감</h1>
-  <p class="lede">동료 · 장비 · 아이템 · 지역 · 적 · 퀘스트 · 배지 · 고양이 · 기억을 게임 화면 기준으로 정리했습니다. 이야기와 관련된 내용은 흐리게 가려 두었습니다. 누르면 하나씩 보이고, 「스포일러 모두 보기」로 한 번에 펼칠 수 있습니다.</p>
+  <div class="eyebrow">Another Eden Begins <span style="font-family:var(--sans);letter-spacing:0;text-transform:none">· Unofficial codex</span><a class="lang" href="../">한국어</a></div>
+  <h1>Another Eden Begins Codex</h1>
+  <p class="lede">Allies, equipment, items, areas, enemies, quests, badges, cats and memories, organized as the game shows them — names and descriptions use the game's official English text. Story-related content is blurred: tap to reveal one at a time, or turn on “Show all spoilers”.</p>
 </header>
-<nav class="bar" aria-label="분류">
+<nav class="bar" aria-label="Type">
   <div class="wrap" id="tabs" role="tablist"></div>
 </nav>
 <main class="wrap">
   <div class="tools">
     <label class="search"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="#787774" stroke-width="1.8"/><path d="M11 11l3.5 3.5" stroke="#787774" stroke-width="1.8" stroke-linecap="round"/></svg>
-      <input id="q" type="search" placeholder="이름으로 찾기 (한국어 · 일본어)" autocomplete="off" aria-label="검색"></label>
-    <label class="sp-switch"><input type="checkbox" id="spoil"><span>스포일러 모두 보기</span></label>
+      <input id="q" type="search" placeholder="Search by name (English · Japanese)" autocomplete="off" aria-label="Search"></label>
+    <label class="sp-switch"><input type="checkbox" id="spoil"><span>Show all spoilers</span></label>
   </div>
   <div id="chips"></div>
   <div class="meta"><span class="count" id="count"></span><div class="sortbar" id="sort"></div></div>
-  <div id="grid" class="grid"><div class="loading">불러오는 중</div></div>
+  <div id="grid" class="grid"><div class="loading">Loading</div></div>
 </main>
 <footer class="wrap">
-  비공식 팬 가이드입니다. 게임 정식판(Steam) 데이터를 기준으로 정리했으며, 게임 이미지와 명칭의 권리는 원저작자에게 있습니다.
+  Unofficial fan guide based on the full release (Steam) game data. All game images and names belong to their respective owners.
 </footer>
 <div class="scrim" id="scrim"></div>
-<aside id="detail" aria-hidden="true" aria-label="상세"></aside>
+<aside id="detail" aria-hidden="true" aria-label="Details"></aside>
 
 <script>
 (() => {
 const TABS = [
-  {id:"chars", n:"동료"}, {id:"equip", n:"장비"}, {id:"goods", n:"아이템 · 재료"},
-  {id:"maps", n:"지역"}, {id:"enemies", n:"적"}, {id:"quests", n:"퀘스트"},
-  {id:"badges", n:"배지"}, {id:"cats", n:"고양이"}, {id:"memories", n:"기억"}];   // 2026-09-27 인게임 도감 분류 중 빠져 있던 셋
+  {id:"chars", n:"Allies"}, {id:"equip", n:"Equipment"}, {id:"goods", n:"Items · Materials"},
+  {id:"maps", n:"Areas"}, {id:"enemies", n:"Enemies"}, {id:"quests", n:"Quests"},
+  {id:"badges", n:"Badges"}, {id:"cats", n:"Cats"}, {id:"memories", n:"Journal & Memories"}];   
 const TAB_OF_ITEM = t => (t === "weapon" || t === "armor") ? "equip" : "goods";
-const KIND_N = {weapon:"무기", armor:"방어구", lunch:"도시락", item:"아이템", mat:"재료"};
-const VEIL_N = {boss:"스포일러 · 보스", ng:"스포일러 · 2회차", secret:"스포일러 · 숨은 제작법", story:"스포일러 · 스토리"};
-const RES = ["베기","찌르기","타격","마법","불","땅","바람","물"];
+const KIND_N = {weapon:"Weapons", armor:"Armor", lunch:"Food", item:"Items", mat:"Materials"};
+const VEIL_N = {boss:"Spoiler · Boss", ng:"Spoiler · 2nd Playthrough", secret:"Spoiler · Hidden recipe", story:"Spoiler · Story"};
+const RES = ["Slash","Pierce","Blunt","Magic","Fire","Earth","Wind","Water"];
 const D = {}, K = {}, BYN = {item:{}, enemy:{}, map:{}, char:{}, quest:{}, badge:{}, cat:{}, memory:{}};
 const S = {tab:"chars", f:{}, q:"", spoil:false, seen:new Set(), sort:{}};
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const num = v => v == null ? "" : Number(v).toLocaleString("ko-KR");
+const num = v => v == null ? "" : Number(v).toLocaleString("en-US");
 const range = r => !Array.isArray(r) ? num(r) : (r[0] === r[1] ? num(r[0]) : `${num(r[0])}–${num(r[1])}`);
 const store = {get(k){try{return localStorage.getItem(k)}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 
-// 〈장 부제〉 는 인라인 스포일러로
+
 const spText = s => esc(s).replace(/〈([^〉]*)〉/g, '<span class="sp" tabindex="0">〈$1〉</span>');
-const spBlock = s => s ? `<div class="spwrap"><p class="prose spb" tabindex="0">${esc(s)}</p><div class="hint">스포일러 — 눌러서 보기</div></div>` : "";
-const icon = (i, fb) => i ? `<img src="images/${esc(i)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : esc((fb || "?").slice(0,1));
+const spBlock = s => s ? `<div class="spwrap"><p class="prose spb" tabindex="0">${esc(s)}</p><div class="hint">Spoiler — tap to reveal</div></div>` : "";
+const icon = (i, fb) => i ? `<img src="../images/${esc(i)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : esc((fb || "?").slice(0,1));
 const tag = (t, cls) => `<span class="tag ${cls ? "t-" + cls : ""}">${esc(t)}</span>`;
-// 2026-09-27 항목 링크는 누르면 그 자리에서 펼친다(data-p). 가린 항목(r.sp) · veil 지정은 한 겹만 흐리게
+
 const veilSpan = h => `<span class="sp" tabindex="0">${h}</span>`;
 function link(name, type, veil){
-  const r = (BYN[type] && BYN[type][name]) || (type === "item" ? BYN.badge[name] : null);   // 보물 · 드롭의 배지
+  const r = (BYN[type] && BYN[type][name]) || (type === "item" ? BYN.badge[name] : null);   
   if (!r) return veil ? veilSpan(esc(name)) : esc(name);
   const a = `<a class="lk" data-p="${esc(r.k)}" role="button" tabindex="0" aria-expanded="false">${esc(name)}</a>`;
   return veil || (r.sp && r.sp.length && !S.seen.has(r.k)) ? veilSpan(a) : a;
 }
-const weak = e => Object.entries(e.rs || {}).filter(([,v]) => v.includes("약점")).map(([k]) => k);
+const weak = e => Object.entries(e.rs || {}).filter(([,v]) => v.includes("Weak")).map(([k]) => k);
 
 async function load(){
   const names = ["chars","items","enemies","maps","quests","badges","cats","memories"];
@@ -280,7 +280,7 @@ async function load(){
   const put = (arr, type) => arr.forEach(r => { r._t = type; K[r.k] = r; if (!BYN[type][r.n]) BYN[type][r.n] = r; });
   put(D.chars, "char"); put(D.items, "item"); put(D.enemies, "enemy"); put(D.maps, "map"); put(D.quests, "quest");
   put(D.badges, "badge"); put(D.cats, "cat"); put(D.memories, "memory");
-  D.badges.forEach(r => r.t.forEach(t => { if (!BYN.badge[t.n]) BYN.badge[t.n] = r; }));   // 등급 이름(「…의 증표」)으로도 찾는다
+  D.badges.forEach(r => r.t.forEach(t => { if (!BYN.badge[t.n]) BYN.badge[t.n] = r; }));   
 }
 
 function rows(tab){
@@ -291,17 +291,17 @@ function rows(tab){
     default: return D[tab];
   }
 }
-// 탭별 필터 칩 — [이름, 값 뽑기]
+
 const FACETS = {
-  chars:   [["무기", r => r.wt]],
-  equip:   [["구분", r => KIND_N[r.tab]], ["종류", r => r.g]],
-  goods:   [["구분", r => KIND_N[r.tab]], ["종류", r => r.g]],
-  enemies: [["분류", r => r.tabn], ["약점", r => weak(r)]],
-  quests:  [["종류", r => r.kind]],
+  chars:   [["Weapons", r => r.wt]],
+  equip:   [["Category", r => KIND_N[r.tab]], ["Kind", r => r.g]],
+  goods:   [["Category", r => KIND_N[r.tab]], ["Kind", r => r.g]],
+  enemies: [["Type", r => r.tabn], ["Weak", r => weak(r)]],
+  quests:  [["Kind", r => r.kind]],
   maps:    [],
-  badges:  [["분류", r => r.cat]],
-  cats:    [["시대", r => r.era], ["거처", r => r.wh]],
-  memories:[["종류", r => r.kind], ["묶음", r => r.g]]};
+  badges:  [["Type", r => r.cat]],
+  cats:    [["Era", r => r.era], ["Home", r => r.wh]],
+  memories:[["Kind", r => r.kind], ["Group", r => r.g]]};
 function matches(r){
   const q = S.q.trim().toLowerCase();
   if (q && !(`${r.n} ${r.nj || ""}`.toLowerCase().includes(q))) return false;
@@ -312,18 +312,18 @@ function matches(r){
   });
 }
 const veiled = r => r.sp && r.sp.length && !S.spoil && !S.seen.has(r.k);
-// 2026-09-27 탭별 정렬 — [이름, 값 뽑기, 처음 누를 때 방향(1 오름 · -1 내림)]. 값이 없는 항목은 방향과 무관하게 뒤로
+
 const lo = v => Array.isArray(v) ? v[0] : v, hi = v => Array.isArray(v) ? v[v.length - 1] : v;
 const SORTS = {
-  chars:   [["합류 장", r => r.ch, 1], ["이름", r => r.n, 1]],
-  equip:   [["공격력 · 방어력", r => r.v, -1], ["이름", r => r.n, 1]],
-  goods:   [["이름", r => r.n, 1]],
-  maps:    [["적 레벨", r => lo(r.lv), 1], ["이름", r => r.n, 1]],
-  enemies: [["레벨", r => lo(r.lv), 1], ["HP", r => hi(r.hp), -1], ["경험치", r => r.exp, -1], ["Git", r => r.gold, -1], ["이름", r => r.n, 1]],
-  quests:  [["권장 레벨", r => r.lv, 1], ["이름", r => r.n, 1]],
-  badges:  [["적 레벨", r => r.lv, 1], ["이름", r => r.n, 1]],
-  cats:    [["이름", r => r.n, 1]],
-  memories:[["장 번호", r => r.ch, 1]]};
+  chars:   [["Join chapter", r => r.ch, 1], ["Name", r => r.n, 1]],
+  equip:   [["ATK · DEF", r => r.v, -1], ["Name", r => r.n, 1]],
+  goods:   [["Name", r => r.n, 1]],
+  maps:    [["Enemy level", r => lo(r.lv), 1], ["Name", r => r.n, 1]],
+  enemies: [["Level", r => lo(r.lv), 1], ["HP", r => hi(r.hp), -1], ["EXP", r => r.exp, -1], ["Git", r => r.gold, -1], ["Name", r => r.n, 1]],
+  quests:  [["Rec. level", r => r.lv, 1], ["Name", r => r.n, 1]],
+  badges:  [["Enemy level", r => r.lv, 1], ["Name", r => r.n, 1]],
+  cats:    [["Name", r => r.n, 1]],
+  memories:[["Chapter", r => r.ch, 1]]};
 function sorted(list){
   const st = S.sort[S.tab]; if (!st) return list;
   const [, get] = SORTS[S.tab][st[0]], dir = st[1];
@@ -336,10 +336,10 @@ function sorted(list){
 }
 function renderSort(){
   const st = S.sort[S.tab];
-  // 2026-09-27 기본 순서 = 게임 도감 목록 순서(지역 · 퀘스트는 게임 도감이 없어 「기본」)
-  $("#sort").innerHTML = `<span class="lbl">정렬</span><button data-s="-1" aria-pressed="${!st}">${S.tab === "maps" || S.tab === "quests" ? "기본" : "도감 순"}</button>` +
+  
+  $("#sort").innerHTML = `<span class="lbl">Sort</span><button data-s="-1" aria-pressed="${!st}">${S.tab === "maps" || S.tab === "quests" ? "Default" : "Codex order"}</button>` +
     (SORTS[S.tab] || []).map(([n, , d], i) => { const on = st && st[0] === i; const dir = on ? st[1] : d;
-      return `<button data-s="${i}" aria-pressed="${!!on}" title="${dir > 0 ? "낮은 순 · 가나다순" : "높은 순"}">${esc(n)}${on ? (dir > 0 ? " ↑" : " ↓") : ""}</button>`; }).join("");
+      return `<button data-s="${i}" aria-pressed="${!!on}" title="${dir > 0 ? "Low to high · A–Z" : "High to low"}">${esc(n)}${on ? (dir > 0 ? " ↑" : " ↓") : ""}</button>`; }).join("");
 }
 
 function renderTabs(){
@@ -352,181 +352,181 @@ function renderTabs(){
 function renderChips(){
   const all = rows(S.tab), f = S.f[S.tab] || (S.f[S.tab] = {});
   $("#chips").innerHTML = (FACETS[S.tab] || []).map(([fn, get]) => {
-    // 첫 칩이 걸려 있으면 둘째 칩의 선택지는 그 안에서만
+    
     const base = FACETS[S.tab][0][0] === fn ? all : all.filter(r => { const w = f[FACETS[S.tab][0][0]]; if (!w) return true; const v = FACETS[S.tab][0][1](r); return Array.isArray(v) ? v.includes(w) : v === w; });
     const vals = [...new Set(base.flatMap(r => { const v = get(r); return Array.isArray(v) ? v : [v]; }).filter(Boolean))];
-    if (fn === "약점") vals.sort((a, b) => RES.indexOf(a) - RES.indexOf(b));
+    if (fn === "Weak") vals.sort((a, b) => RES.indexOf(a) - RES.indexOf(b));
     if (vals.length < 2) return "";
-    // 2026-09-27 선택지가 많으면(기억 묶음 · 고양이 거처) 칩 대신 드롭다운 — 모바일 첫 화면을 칩이 덮는다
-    if (vals.length > 16) return `<div class="chips" data-f="${esc(fn)}"><select class="fsel" aria-label="${esc(fn)}"><option value="">${esc(fn)} 전체</option>` +
+    
+    if (vals.length > 16) return `<div class="chips" data-f="${esc(fn)}"><select class="fsel" aria-label="${esc(fn)}"><option value="">${esc(fn)} All</option>` +
       vals.map(v => `<option value="${esc(v)}"${f[fn] === v ? " selected" : ""}>${esc(v)}</option>`).join("") + `</select></div>`;
-    return `<div class="chips" data-f="${esc(fn)}"><button class="chip" aria-pressed="${!f[fn]}" data-v="">${esc(fn)} 전체</button>` +
+    return `<div class="chips" data-f="${esc(fn)}"><button class="chip" aria-pressed="${!f[fn]}" data-v="">${esc(fn)} All</button>` +
       vals.map(v => `<button class="chip" aria-pressed="${f[fn] === v}" data-v="${esc(v)}">${esc(v)}</button>`).join("") + "</div>";
   }).join("");
 }
 function card(r, i){
-  const vl = veiled(r) ? ` veil" data-veil="${esc(r.sp[0] === "story" && r.ch ? `스포일러 · 제${r.ch}장` : VEIL_N[r.sp[0]] || "스포일러")}` : "";
+  const vl = veiled(r) ? ` veil" data-veil="${esc(r.sp[0] === "story" && r.ch ? `Spoiler · Ch. ${r.ch}` : VEIL_N[r.sp[0]] || "Spoiler")}` : "";
   let sub = "", tags = "";
   switch(r._t){
-    case "char": sub = [r.job, r.wt].filter(Boolean).join(" · "); if (r.ch) tags = tag(`제${r.ch}장 합류`); break;
+    case "char": sub = [r.job, r.wt].filter(Boolean).join(" · "); if (r.ch) tags = tag(`Ch. ${r.ch} · joins`); break;
     case "item":
-      sub = [KIND_N[r.tab], r.g].filter(Boolean).join(" · ") + (r.v ? ` · ${r.tab === "armor" ? "방어력" : "공격력"} ${num(r.v)}` : "");
+      sub = [KIND_N[r.tab], r.g].filter(Boolean).join(" · ") + (r.v ? ` · ${r.tab === "armor" ? "DEF" : "ATK"} ${num(r.v)}` : "");
       if (r.ab) tags = tag(r.ab); else if (r.fx) tags = tag(r.fx.split("\n")[0]);
       break;
-    case "enemy": sub = `${esub(r)} · Lv ${range(r.lv)}`; tags = weak(r).map(w => tag(w, "약점")).join(""); break;
+    case "enemy": sub = `${esub(r)} · Lv ${range(r.lv)}`; tags = weak(r).map(w => tag(w, "Weak")).join(""); break;
     case "quest": sub = [r.where, r.lv ? `Lv ${r.lv}` : ""].filter(Boolean).join(" · "); tags = tag(r.kind); break;
     case "badge": sub = [r.cat, r.pc].filter(Boolean).join(" · "); tags = tag(r.t[r.t.length - 1].a); break;
     case "cat": sub = [r.wh, r.area].filter(Boolean).join(" · "); if (r.per) tags = tag(r.per); break;
     case "memory": sub = [r.g, r.wh].filter(Boolean).join(" · "); tags = tag(r.kind); break;
   }
-  if (r._t === "map") return `<button class="card map${vl}" style="--i:${i}" data-k="${esc(r.k)}"><div class="thumb">${r.i ? icon(r.i) : ""}</div><div class="body"><div class="nm">${esc(r.n)}</div><div class="sub">Lv ${range(r.lv)} · 적 ${r.en.length} · 보물 ${r.ch.filter(c => c.o !== "이벤트").length}</div></div></button>`;
+  if (r._t === "map") return `<button class="card map${vl}" style="--i:${i}" data-k="${esc(r.k)}"><div class="thumb">${r.i ? icon(r.i) : ""}</div><div class="body"><div class="nm">${esc(r.n)}</div><div class="sub">Lv ${range(r.lv)} · Enemies ${r.en.length} · Treasure ${r.ch.filter(c => c.o !== "Event").length}</div></div></button>`;
   return `<button class="card${vl}" style="--i:${i}" data-k="${esc(r.k)}">${r._t === "quest" ? "" : `<div class="ic">${icon(r.i, r.n)}</div>`}<div style="min-width:0"><div class="nm">${esc(r.n)}</div><div class="sub">${esc(sub)}</div>${tags ? `<div class="tags">${tags}</div>` : ""}</div></button>`;
 }
 function renderGrid(){
   const list = sorted(rows(S.tab).filter(matches));
-  $("#count").textContent = `${list.length.toLocaleString("ko-KR")}개`;
+  $("#count").textContent = `${list.length.toLocaleString("en-US")} entries`;
   const g = $("#grid");
   g.className = "grid" + (S.tab === "maps" || S.tab === "quests" ? " wide" : "");
-  g.innerHTML = list.length ? list.map(card).join("") : `<div class="empty">조건에 맞는 항목이 없습니다.</div>`;
+  g.innerHTML = list.length ? list.map(card).join("") : `<div class="empty">No matching entries.</div>`;
 }
 function render(){ renderTabs(); renderChips(); renderSort(); renderGrid(); }
 
-/* ---------------- 상세 ---------------- */
+
 function srcList(src){
-  if (!src || !src.length) return `<p class="muted">알려진 입수처가 없습니다.</p>`;
-  return `<ul class="list">${src.map(s => `<li><span class="l">${s[2] === "boss" ? veilSpan(esc(s[1])) : spText(s[1])}</span><span class="r">${esc(s[0])}${s[2] === "ng" ? " " + tag("2회차", "ng") : ""}</span></li>`).join("")}</ul>`;
+  if (!src || !src.length) return `<p class="muted">No known source.</p>`;
+  return `<ul class="list">${src.map(s => `<li><span class="l">${s[2] === "boss" ? veilSpan(esc(s[1])) : spText(s[1])}</span><span class="r">${esc(s[0])}${s[2] === "ng" ? " " + tag("2nd Playthrough", "ng") : ""}</span></li>`).join("")}</ul>`;
 }
 function itemDetail(r){
   const st = [];
-  if (r.v) st.push([num(r.v), r.tab === "armor" ? "방어력" : "공격력"]);
-  if (r.at) st.push([r.at, "공격 타입"]);
+  if (r.v) st.push([num(r.v), r.tab === "armor" ? "DEF" : "ATK"]);
+  if (r.at) st.push([r.at, "Attack type"]);
   let h = `<div class="hero"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([KIND_N[r.tab], r.g].filter(Boolean).join(" · "))}</div></div></div>`;
   if (st.length) h += `<div class="stats">${st.map(([v, l]) => `<div><b>${esc(v)}</b><span>${l}</span></div>`).join("")}</div>`;
-  if (r.ab) h += `<h3>어빌리티</h3><p class="prose"><b>${esc(r.ab)}</b><br>${esc(r.abd || "")}</p>`;
-  if (r.fx) h += `<h3>효과</h3><p class="prose">${esc(r.fx)}</p>`;
-  if (r.pc) h += `<h3>전용</h3><p class="prose">${link(r.pc, "char")} 전용</p>`;
-  if (r.d) h += `<h3>설명</h3><p class="prose">${esc(r.d)}</p>`;
-  h += `<h3>입수처</h3>${srcList(r.src)}`;
+  if (r.ab) h += `<h3>Abilities</h3><p class="prose"><b>${esc(r.ab)}</b><br>${esc(r.abd || "")}</p>`;
+  if (r.fx) h += `<h3>Effect</h3><p class="prose">${esc(r.fx)}</p>`;
+  if (r.pc) h += `<h3>Exclusive</h3><p class="prose">${link(r.pc, "char")} Exclusive</p>`;
+  if (r.d) h += `<h3>Description</h3><p class="prose">${esc(r.d)}</p>`;
+  h += `<h3>Where to get</h3>${srcList(r.src)}`;
   if (r.rc){
     const rec = `<ul class="list">${r.rc.map(([mk, n]) => { const m = K[mk]; return `<li><span class="l">${m ? link(m.n, "item") : esc(mk)}</span><span class="r">× ${n}</span></li>`; }).join("")}</ul>`;
-    h += `<h3>제작 재료</h3>` + ((r.sp || []).includes("secret") ? `<div class="spwrap"><div class="spb" tabindex="0">${rec}</div><div class="hint">숨은 제작법 — 눌러서 보기</div></div>` : rec);
+    h += `<h3>Crafting materials</h3>` + ((r.sp || []).includes("secret") ? `<div class="spwrap"><div class="spb" tabindex="0">${rec}</div><div class="hint">Hidden recipe — tap to reveal</div></div>` : rec);
   }
-  if (r.use) h += `<h3>이 재료로 만드는 것</h3><ul class="list">${r.use.map(k => { const u = K[k]; return u ? `<li><span class="l">${link(u.n, "item")}</span><span class="r">${esc(KIND_N[u.tab])}</span></li>` : ""; }).join("")}</ul>`;
-  if (r.gift) h += `<h3>선물로 주면</h3><ul class="list"><li><span class="l">${r.gift["좋음"].map(n => link(n, "char")).join(", ") || "—"}</span><span class="r">${tag("좋아함", "바람")}</span></li><li><span class="l">${r.gift["나쁨"].map(n => link(n, "char")).join(", ") || "—"}</span><span class="r">${tag("싫어함", "불")}</span></li></ul>`;
+  if (r.use) h += `<h3>Used to craft</h3><ul class="list">${r.use.map(k => { const u = K[k]; return u ? `<li><span class="l">${link(u.n, "item")}</span><span class="r">${esc(KIND_N[u.tab])}</span></li>` : ""; }).join("")}</ul>`;
+  if (r.gift) h += `<h3>As a gift</h3><ul class="list"><li><span class="l">${r.gift["좋음"].map(n => link(n, "char")).join(", ") || "—"}</span><span class="r">${tag("Likes", "Wind")}</span></li><li><span class="l">${r.gift["나쁨"].map(n => link(n, "char")).join(", ") || "—"}</span><span class="r">${tag("Dislikes", "Fire")}</span></li></ul>`;
   return h;
 }
 function charDetail(r){
-  let h = `<div class="hero pc"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.nj, r.job, r.wt].filter(Boolean).join(" · "))}</div>${r.like ? `<div class="tags">${tag("좋아하는 것 · " + r.like)}</div>` : ""}</div></div>`;
+  let h = `<div class="hero pc"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.nj, r.job, r.wt].filter(Boolean).join(" · "))}</div>${r.like ? `<div class="tags">${tag("Likes · " + r.like)}</div>` : ""}</div></div>`;
   if (r.intro) h += `<p class="prose" style="margin-top:14px">${esc(r.intro)}</p>`;
   if (r.join){
-    h += `<h3>합류</h3><ul class="list">` +
-      (r.join.quest ? `<li><span class="l">${link(r.join.quest, "quest")}</span><span class="r">퀘스트</span></li>` : "") +
-      (r.join.where ? `<li><span class="l">${link(r.join.where, "map")}</span><span class="r">장소</span></li>` : "") +
-      (r.join.cond ? `<li><span class="l">${spText(r.join.cond)}</span><span class="r">조건</span></li>` : "") + `</ul>` + spBlock(r.join.story);
+    h += `<h3>Joining</h3><ul class="list">` +
+      (r.join.quest ? `<li><span class="l">${link(r.join.quest, "quest")}</span><span class="r">Quests</span></li>` : "") +
+      (r.join.where ? `<li><span class="l">${link(r.join.where, "map")}</span><span class="r">Location</span></li>` : "") +
+      (r.join.cond ? `<li><span class="l">${spText(r.join.cond)}</span><span class="r">Condition</span></li>` : "") + `</ul>` + spBlock(r.join.story);
   }
   if (r.skills && r.skills.length){
-    h += `<h3>스킬</h3>` + r.skills.map(s => `<div class="skill"><div class="top"><b>${esc(s.n)}</b>${s.el && s.el !== "무" ? tag(s.el, s.el) : ""}${s.t && s.t !== "액티브" ? tag(s.t) : ""}${s.chain ? tag(`체인 ${s.chain}`) : ""}${s.mp != null ? `<span class="mp">MP ${s.mp}</span>` : ""}</div>` +
-      (s.tr ? `<div class="ev">발동 조건 · ${esc(s.tr)}</div>` : "") + `<div class="d">${esc(s.d)}</div>` + (s.evo ? `<div class="ev">→ ${esc(s.evo)}(으)로 강화</div>` : "") + `</div>`).join("");
+    h += `<h3>Skill</h3>` + r.skills.map(s => `<div class="skill"><div class="top"><b>${esc(s.n)}</b>${s.el && s.el !== "None" ? tag(s.el, s.el) : ""}${s.t && s.t !== "Active" ? tag(s.t) : ""}${s.chain ? tag(`Chain ${s.chain}`) : ""}${s.mp != null ? `<span class="mp">MP ${s.mp}</span>` : ""}</div>` +
+      (s.tr ? `<div class="ev">Trigger · ${esc(s.tr)}</div>` : "") + `<div class="d">${esc(s.d)}</div>` + (s.evo ? `<div class="ev">→ ${esc(s.evo)}(upgraded form)</div>` : "") + `</div>`).join("");
   }
-  if (r.stacks) h += `<h3>고유 게이지</h3><ul class="list">${r.stacks.map(([n, mx, d]) => `<li><span class="l"><b>${esc(n)}</b> ${esc(d || "")}</span><span class="r">최대 ${esc(mx)}</span></li>`).join("")}</ul>`;
-  if (r.boards) h += `<h3>어빌리티 보드</h3>` + r.boards.map(b => `<details class="fold"><summary>${esc(b.n)}</summary><div class="in"><p class="prose muted">${esc(b.d)}</p><ul class="list">${b.nodes.map(([dp, n, d]) => `<li><span class="l"><b>${esc(n)}</b>${d && d !== n ? ` <span class="muted">${esc(d)}</span>` : ""}</span><span class="r">${dp} DP</span></li>`).join("")}</ul></div></details>`).join("");
-  if (r.good || r.bad) h += `<h3>선물</h3><ul class="list"><li><span class="l">${(r.good || []).map(n => link(n, "item")).join(", ") || "—"}</span><span class="r">${tag("좋아함", "바람")}</span></li><li><span class="l">${(r.bad || []).map(n => link(n, "item")).join(", ") || "—"}</span><span class="r">${tag("싫어함", "불")}</span></li></ul>`;
-  if (r.titles) h += `<h3>친밀도 칭호</h3><ul class="list">${r.titles.map(([t, q], i) => `<li><span class="l">${q ? link(q, "quest") : esc(t)}</span><span class="r">${i === 0 ? "처음부터" : `친밀도 ${i + 1}`}</span></li>`).join("")}</ul>`;
-  // 2026-09-27 이 동료의 배지 · 동료와의 기억
+  if (r.stacks) h += `<h3>Unique gauge</h3><ul class="list">${r.stacks.map(([n, mx, d]) => `<li><span class="l"><b>${esc(n)}</b> ${esc(d || "")}</span><span class="r">Max ${esc(mx)}</span></li>`).join("")}</ul>`;
+  if (r.boards) h += `<h3>Ability boards</h3>` + r.boards.map(b => `<details class="fold"><summary>${esc(b.n)}</summary><div class="in"><p class="prose muted">${esc(b.d)}</p><ul class="list">${b.nodes.map(([dp, n, d]) => `<li><span class="l"><b>${esc(n)}</b>${d && d !== n ? ` <span class="muted">${esc(d)}</span>` : ""}</span><span class="r">${dp} DP</span></li>`).join("")}</ul></div></details>`).join("");
+  if (r.good || r.bad) h += `<h3>Gifts</h3><ul class="list"><li><span class="l">${(r.good || []).map(n => link(n, "item")).join(", ") || "—"}</span><span class="r">${tag("Likes", "Wind")}</span></li><li><span class="l">${(r.bad || []).map(n => link(n, "item")).join(", ") || "—"}</span><span class="r">${tag("Dislikes", "Fire")}</span></li></ul>`;
+  if (r.titles) h += `<h3>Kinship titles</h3><ul class="list">${r.titles.map(([t, q], i) => `<li><span class="l">${q ? link(q, "quest") : esc(t)}</span><span class="r">${i === 0 ? "from the start" : `Kinship ${i + 1}`}</span></li>`).join("")}</ul>`;
+  
   const bd = (D.badges || []).find(b => b.pc === r.n);
-  if (bd) h += `<h3>배지</h3><ul class="list"><li><span class="l">${link(bd.n, "badge")}</span><span class="r">${bd.t.length}등급</span></li></ul>`;
+  if (bd) h += `<h3>Badges</h3><ul class="list"><li><span class="l">${link(bd.n, "badge")}</span><span class="r">${bd.t.length}Grades</span></li></ul>`;
   const mem = (D.memories || []).filter(m => m.pc === r.n);
-  if (mem.length) h += `<h3>동료와의 기억</h3><ul class="list">${mem.map(m => `<li><span class="l">${link(m.n, "memory")}</span><span class="r">${esc(m.wh || "")}</span></li>`).join("")}</ul>`;
+  if (mem.length) h += `<h3>Memories</h3><ul class="list">${mem.map(m => `<li><span class="l">${link(m.n, "memory")}</span><span class="r">${esc(m.wh || "")}</span></li>`).join("")}</ul>`;
   return h;
 }
-const esub = r => [r.tabn, r.cat].filter((x, i, a) => x && a.indexOf(x) === i).join(" · ");   // 「FEAR · FEAR」 같은 겹침 제거
+const esub = r => [r.tabn, r.cat].filter((x, i, a) => x && a.indexOf(x) === i).join(" · ");   
 function enemyDetail(r){
   let h = `<div class="hero"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc(esub(r))}</div></div></div>`;
-  const st = [[range(r.lv), "레벨"], [range(r.hp), "HP"]];
-  if (r.exp != null) st.push([num(r.exp), "경험치"]);
+  const st = [[range(r.lv), "Level"], [range(r.hp), "HP"]];
+  if (r.exp != null) st.push([num(r.exp), "EXP"]);
   if (r.gold != null) st.push([num(r.gold), "Git"]);
   h += `<div class="stats">${st.map(([v, l]) => `<div><b>${esc(v)}</b><span>${l}</span></div>`).join("")}</div>`;
   if (r.meet && r.meet.length){ const b = `<ul class="list">${r.meet.map((x, i) => `<li><span class="l">${(r.hs || []).includes(i) ? veilSpan(esc(x)) : spText(x)}</span></li>`).join("")}</ul>`;
-    h += `<h3>만나는 방법</h3>` + (r.hsp ? `<div class="spwrap"><div class="spb" tabindex="0">${b}</div><div class="hint">스포일러 — 눌러서 보기</div></div>` : b); }
-  h += `<h3>약점 · 내성</h3><div class="rs">${RES.map(k => { const v = (r.rs || {})[k] || []; return `<div><div class="h">${k}</div>${v.length ? v.map(x => tag(x, x)).join(" ") : '<span class="muted">—</span>'}</div>`; }).join("")}</div>`;
-  if (r.dr || r.bd) h += `<h3>드롭</h3><ul class="list">${(r.dr || []).map(n => `<li><span class="l">${link(n, "item")}</span></li>`).join("")}${r.bd ? `<li><span class="l">${link(r.bd, "badge")}</span><span class="r">배지</span></li>` : ""}</ul>`;
-  if (r.wh) h += `<h3>나오는 곳</h3><ul class="list">${[...new Set(r.wh)].map(n => `<li><span class="l">${link(n, "map")}</span></li>`).join("")}</ul>`;
-  else if (r.loc) h += `<h3>나오는 곳</h3><p class="prose">${esc(r.loc)}</p>`;
+    h += `<h3>How to meet</h3>` + (r.hsp ? `<div class="spwrap"><div class="spb" tabindex="0">${b}</div><div class="hint">Spoiler — tap to reveal</div></div>` : b); }
+  h += `<h3>Weaknesses · Resistances</h3><div class="rs">${RES.map(k => { const v = (r.rs || {})[k] || []; return `<div><div class="h">${k}</div>${v.length ? v.map(x => tag(x, x)).join(" ") : '<span class="muted">—</span>'}</div>`; }).join("")}</div>`;
+  if (r.dr || r.bd) h += `<h3>Drop</h3><ul class="list">${(r.dr || []).map(n => `<li><span class="l">${link(n, "item")}</span></li>`).join("")}${r.bd ? `<li><span class="l">${link(r.bd, "badge")}</span><span class="r">Badges</span></li>` : ""}</ul>`;
+  if (r.wh) h += `<h3>Found in</h3><ul class="list">${[...new Set(r.wh)].map(n => `<li><span class="l">${link(n, "map")}</span></li>`).join("")}</ul>`;
+  else if (r.loc) h += `<h3>Found in</h3><p class="prose">${esc(r.loc)}</p>`;
   return h;
 }
-// 2026-09-27 보물 — 구역별 묶음. c[0] = 1회차(또는 회차 무관), c[1] = 2회차~ 내용물(가림). lap2 = 2회차~에만 주는 이벤트 보상
+
 function chestList(ch){
   const amt = ([n, c]) => c > 1 ? ` × ${num(c)}` : "";
   const groups = [];
-  ch.forEach(c => { const a = c.a || (c.o === "이벤트" ? "이벤트 보상" : "");
+  ch.forEach(c => { const a = c.a || (c.o === "Event" ? "Event reward" : "");
     let g = groups.find(x => x.a === a); if (!g) groups.push(g = {a, rows:[]}); g.rows.push(c); });
   const row = c => {
-    const first = c.lap2 ? `${tag("2회차~", "ng")} ${link(c.c[0][0], "item", true)}${amt(c.c[0])}` : `${link(c.c[0][0], "item", !!c.sp)}${amt(c.c[0])}`;
-    const second = c.c[1] ? `<span class="lap2">${tag("2회차~", "ng")} ${link(c.c[1][0], "item", true)}${amt(c.c[1])}</span>` : "";
+    const first = c.lap2 ? `${tag("2nd Playthrough~", "ng")} ${link(c.c[0][0], "item", true)}${amt(c.c[0])}` : `${link(c.c[0][0], "item", !!c.sp)}${amt(c.c[0])}`;
+    const second = c.c[1] ? `<span class="lap2">${tag("2nd Playthrough~", "ng")} ${link(c.c[1][0], "item", true)}${amt(c.c[1])}</span>` : "";
     return `<li><span class="l">${first}${second}${c.p ? `<span class="from">${esc(c.p)}</span>` : ""}</span><span class="r">${esc(c.o)}</span></li>`;
   };
-  const note = ch.some(c => /\(\d+\/\d+\)/.test(c.a || "")) ? `<p class="note">(1/4) = 이름이 같은 구역 가운데 몇 번째인지 · 대체로 입구 쪽부터</p>` : "";
+  const note = ch.some(c => /\(\d+\/\d+\)/.test(c.a || "")) ? `<p class="note">(1/4) = which of the same-named sections · usually counted from the entrance</p>` : "";
   return note + groups.map(g => (g.a ? `<div class="grp">${esc(g.a)}</div>` : "") + `<ul class="list">${g.rows.map(row).join("")}</ul>`).join("");
 }
 function mapDetail(r){
-  let h = (r.i ? `<div class="banner">${icon(r.i)}</div>` : "") + `<h2>${esc(r.n)}</h2><div class="sub" style="margin-top:4px">적 레벨 ${range(r.lv)}</div>`;
-  if (r.en.length) h += `<h3>나오는 적</h3><ul class="list">${r.en.map(([n, a, b]) => `<li><span class="l">${link(n, "enemy")}</span><span class="r">Lv ${a === b ? a : `${a}–${b}`}</span></li>`).join("")}</ul>`;
-  if (r.ch.length) h += `<h3>보물</h3>` + chestList(r.ch);
-  // 2026-09-27 떨구는 적은 재료 아래 줄로 — 오른쪽 칸(nowrap)에 몰면 모바일에서 가로로 넘친다
-  if (r.dr.length) h += `<h3>드롭 재료</h3><ul class="list">${r.dr.map(([n, from, b]) => `<li><span class="l">${link(n, "item", b === "boss")}<span class="from">${from.map(x => { const [n, note] = x.split(" · "); return link(n, "enemy") + (note ? ` <span class="muted">(${esc(note)})</span>` : ""); }).join(", ")}</span></span></li>`).join("")}</ul>`;
-  const cats = (D.cats || []).filter(c => c.wh === r.n);   // 2026-09-27 이 지역의 고양이
-  if (cats.length) h += `<h3>고양이</h3><ul class="list">${cats.map(c => `<li><span class="l">${link(c.n, "cat")}${c.area ? ` <span class="muted">· ${esc(c.area)}</span>` : ""}</span></li>`).join("")}</ul>`;
+  let h = (r.i ? `<div class="banner">${icon(r.i)}</div>` : "") + `<h2>${esc(r.n)}</h2><div class="sub" style="margin-top:4px">Enemy level ${range(r.lv)}</div>`;
+  if (r.en.length) h += `<h3>Enemies</h3><ul class="list">${r.en.map(([n, a, b]) => `<li><span class="l">${link(n, "enemy")}</span><span class="r">Lv ${a === b ? a : `${a}–${b}`}</span></li>`).join("")}</ul>`;
+  if (r.ch.length) h += `<h3>Treasure</h3>` + chestList(r.ch);
+  
+  if (r.dr.length) h += `<h3>Material drops</h3><ul class="list">${r.dr.map(([n, from, b]) => `<li><span class="l">${link(n, "item", b === "boss")}<span class="from">${from.map(x => { const [n, note] = x.split(" · "); return link(n, "enemy") + (note ? ` <span class="muted">(${esc(note)})</span>` : ""); }).join(", ")}</span></span></li>`).join("")}</ul>`;
+  const cats = (D.cats || []).filter(c => c.wh === r.n);   
+  if (cats.length) h += `<h3>Cats</h3><ul class="list">${cats.map(c => `<li><span class="l">${link(c.n, "cat")}${c.area ? ` <span class="muted">· ${esc(c.area)}</span>` : ""}</span></li>`).join("")}</ul>`;
   if (r.sh.length){
     const by = {}; r.sh.forEach(([shop, n, p, cur]) => (by[shop] = by[shop] || []).push([n, p, cur]));
-    h += `<h3>상점</h3>` + Object.entries(by).map(([shop, xs]) => `<details class="fold"><summary>${esc(shop)} <span class="muted" style="font-weight:400;margin-left:auto;margin-right:12px">${xs.length}</span></summary><div class="in"><ul class="list">${xs.map(([n, p, cur]) => `<li><span class="l">${link(n, "item")}</span><span class="r">${num(p)} ${esc(cur === "Git" ? "Git" : cur)}</span></li>`).join("")}</ul></div></details>`).join("");
+    h += `<h3>Shop</h3>` + Object.entries(by).map(([shop, xs]) => `<details class="fold"><summary>${esc(shop)} <span class="muted" style="font-weight:400;margin-left:auto;margin-right:12px">${xs.length}</span></summary><div class="in"><ul class="list">${xs.map(([n, p, cur]) => `<li><span class="l">${link(n, "item")}</span><span class="r">${num(p)} ${esc(cur === "Git" ? "Git" : cur)}</span></li>`).join("")}</ul></div></details>`).join("");
   }
   return h;
 }
 function questDetail(r){
-  let h = `<h2>${esc(r.n)}</h2><div class="tags" style="margin-top:8px">${tag(r.kind)}${r.lv ? tag(`권장 Lv ${r.lv}`) : ""}</div>`;
+  let h = `<h2>${esc(r.n)}</h2><div class="tags" style="margin-top:8px">${tag(r.kind)}${r.lv ? tag(`Rec. Lv ${r.lv}`) : ""}</div>`;
   h += `<ul class="list" style="margin-top:14px">` +
-    (r.where ? `<li><span class="l">${link(r.where, "map")}</span><span class="r">수주처</span></li>` : "") +
-    (r.cond ? `<li><span class="l">${spText(r.cond)}</span><span class="r">발생 조건</span></li>` : "") + `</ul>`;
-  if (r.story) h += `<h3>내용</h3>` + spBlock(r.story);
-  if (r.route && r.route.length) h += `<h3>경로</h3><p class="prose">${r.route.map(n => link(n, "map")).join(" → ")}</p>`;
-  if (r.rw && r.rw.length) h += `<h3>보상</h3><ul class="list">${r.rw.map(([n, a]) => `<li><span class="l">${link(n, "item")}</span><span class="r">× ${num(a)}</span></li>`).join("")}</ul>`;
+    (r.where ? `<li><span class="l">${link(r.where, "map")}</span><span class="r">Taken at</span></li>` : "") +
+    (r.cond ? `<li><span class="l">${spText(r.cond)}</span><span class="r">Requirements</span></li>` : "") + `</ul>`;
+  if (r.story) h += `<h3>Details</h3>` + spBlock(r.story);
+  if (r.route && r.route.length) h += `<h3>Route</h3><p class="prose">${r.route.map(n => link(n, "map")).join(" → ")}</p>`;
+  if (r.rw && r.rw.length) h += `<h3>Reward</h3><ul class="list">${r.rw.map(([n, a]) => `<li><span class="l">${link(n, "item")}</span><span class="r">× ${num(a)}</span></li>`).join("")}</ul>`;
   return h;
 }
-/* ---------------- 배지 · 고양이 · 기억 (2026-09-27) ---------------- */
+
 function badgeSrc(src){
   if (!src) return "";
-  if (src.e) return `<ul class="list"><li><span class="l">${link(src.e, "enemy")}${src.w ? ` <span class="muted">· ${esc(src.w)}</span>` : ""}</span><span class="r">드롭</span></li></ul>`;
+  if (src.e) return `<ul class="list"><li><span class="l">${link(src.e, "enemy")}${src.w ? ` <span class="muted">· ${esc(src.w)}</span>` : ""}</span><span class="r">Drop</span></li></ul>`;
   if (src.q) return `<ul class="list">${src.q.map(([q, n]) => `<li><span class="l">${link(q, "quest")}</span><span class="r">× ${n}</span></li>`).join("")}</ul>`;
-  if (src.t) return `<ul class="list">${src.t.map(([t, ng]) => `<li><span class="l">${esc(t)}</span><span class="r">보물${ng ? " " + tag("2회차", "ng") : ""}</span></li>`).join("")}</ul>`;
+  if (src.t) return `<ul class="list">${src.t.map(([t, ng]) => `<li><span class="l">${esc(t)}</span><span class="r">Treasure${ng ? " " + tag("2nd Playthrough", "ng") : ""}</span></li>`).join("")}</ul>`;
   if (src.x) return `<ul class="list"><li><span class="l">${src.boss ? veilSpan(esc(src.x)) : esc(src.x)}</span></li></ul>`;
   return "";
 }
 function badgeDetail(r){
   let h = `<div class="hero"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.cat, r.pc].filter(Boolean).join(" · "))}</div></div></div>`;
-  h += `<h3>${r.t.length > 1 ? "등급" : "효과"}</h3>` + r.t.map(t => `<div class="skill"><div class="top"><span class="ic" style="flex-basis:36px;width:36px;height:36px">${icon(t.i, t.n)}</span><b>${esc(t.n)}</b></div>` +
-    `<div class="d"><b>${esc(t.a)}</b> — ${esc(t.d)}</div>` + (t.eq ? `<div class="ev">장착 · ${esc(t.eq)}</div>` : "") +
-    (t.sk || []).map(k => `<div class="ev">스킬 『${esc(k.n)}』${k.mp != null ? ` MP ${k.mp}` : ""}${k.ch ? ` · 체인 ${k.ch}${k.cc ? `(${esc(k.cc)})` : ""}` : ""} — ${esc(k.d)}</div>`).join("") + `</div>`).join("");
-  h += `<h3>획득처</h3>` + (badgeSrc(r.src) || `<p class="muted">알려진 획득처가 없습니다.</p>`);
+  h += `<h3>${r.t.length > 1 ? "Grades" : "Effect"}</h3>` + r.t.map(t => `<div class="skill"><div class="top"><span class="ic" style="flex-basis:36px;width:36px;height:36px">${icon(t.i, t.n)}</span><b>${esc(t.n)}</b></div>` +
+    `<div class="d"><b>${esc(t.a)}</b> — ${esc(t.d)}</div>` + (t.eq ? `<div class="ev">Equip · ${esc(t.eq)}</div>` : "") +
+    (t.sk || []).map(k => `<div class="ev">Skill 『${esc(k.n)}』${k.mp != null ? ` MP ${k.mp}` : ""}${k.ch ? ` · Chain ${k.ch}${k.cc ? `(${esc(k.cc)})` : ""}` : ""} — ${esc(k.d)}</div>`).join("") + `</div>`).join("");
+  h += `<h3>Where to get</h3>` + (badgeSrc(r.src) || `<p class="muted">No known source.</p>`);
   return h;
 }
 function catDetail(r){
-  let h = `<div class="hero"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.per ? "성격 · " + r.per : "", r.era].filter(Boolean).join(" · "))}</div></div></div>`;
-  if (r.like) h += `<h3>좋아하는 것</h3><p class="prose">${esc(r.like)}</p>`;
-  h += `<h3>거처</h3><ul class="list"><li><span class="l">${link(r.wh, "map")}${r.area ? ` · ${esc(r.area)}` : ""}${r.pos ? `<span class="from">${esc(r.pos)} — 처음 서 있는 자리</span>` : ""}</span></li></ul>`;
-  if (r.cond) h += `<h3>나타나는 조건</h3><p class="prose">${spText(r.cond)}</p>`;
+  let h = `<div class="hero"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.per ? "Personality · " + r.per : "", r.era].filter(Boolean).join(" · "))}</div></div></div>`;
+  if (r.like) h += `<h3>Likes</h3><p class="prose">${esc(r.like)}</p>`;
+  h += `<h3>Home</h3><ul class="list"><li><span class="l">${link(r.wh, "map")}${r.area ? ` · ${esc(r.area)}` : ""}${r.pos ? `<span class="from">${esc(r.pos)} — starting spot</span>` : ""}</span></li></ul>`;
+  if (r.cond) h += `<h3>Appearance condition</h3><p class="prose">${spText(r.cond)}</p>`;
   return h;
 }
 function memoryDetail(r){
   let h = (r.i ? `<div class="banner">${icon(r.i)}</div>` : "") + `<h2>${esc(r.n)}</h2><div class="tags" style="margin-top:8px">${tag(r.kind)}${r.g ? tag(r.g) : ""}</div>`;
   h += `<ul class="list" style="margin-top:14px">` +
-    (r.wh ? `<li><span class="l">${link(r.wh, "map")}${r.area ? ` · ${esc(r.area)}` : ""}</span><span class="r">장소</span></li>` : "") +
-    (r.cond ? `<li><span class="l">${spText(r.cond)}</span><span class="r">해금 조건</span></li>` : "") +
-    (r.qt && BYN.quest[r.qt] ? `<li><span class="l">${link(r.qt, "quest")}</span><span class="r">퀘스트</span></li>` : "") +
-    (r.pc ? `<li><span class="l">${link(r.pc, "char")}</span><span class="r">동료</span></li>` : "") + `</ul>`;
-  if (r.story) h += `<h3>내용</h3>` + spBlock(r.story);
+    (r.wh ? `<li><span class="l">${link(r.wh, "map")}${r.area ? ` · ${esc(r.area)}` : ""}</span><span class="r">Location</span></li>` : "") +
+    (r.cond ? `<li><span class="l">${spText(r.cond)}</span><span class="r">Unlock condition</span></li>` : "") +
+    (r.qt && BYN.quest[r.qt] ? `<li><span class="l">${link(r.qt, "quest")}</span><span class="r">Quests</span></li>` : "") +
+    (r.pc ? `<li><span class="l">${link(r.pc, "char")}</span><span class="r">Allies</span></li>` : "") + `</ul>`;
+  if (r.story) h += `<h3>Details</h3>` + spBlock(r.story);
   return h;
 }
-/* ---------------- 제자리 펼치기 (2026-09-27) ---------------- */
+
 function mini(r){
   const kv = xs => `<div class="kv">${xs.filter(x => x[0] !== "" && x[0] != null).map(([v, l]) => `<span>${l} <b>${esc(v)}</b></span>`).join("")}</div>`;
   const row = (l, h) => h ? `<div class="row"><span>${l}</span>${h}</div>` : "";
@@ -534,50 +534,50 @@ function mini(r){
   switch(r._t){
     case "enemy": {
       sub = esub(r);
-      body = kv([[range(r.lv), "Lv"], [range(r.hp), "HP"], [r.exp != null ? num(r.exp) : "", "경험치"], [r.gold != null ? num(r.gold) : "", "Git"]]);
+      body = kv([[range(r.lv), "Lv"], [range(r.hp), "HP"], [r.exp != null ? num(r.exp) : "", "EXP"], [r.gold != null ? num(r.gold) : "", "Git"]]);
       const rs = RES.flatMap(k => ((r.rs || {})[k] || []).map(v => tag(`${k} ${v}`, v))).join(" ");
-      body += row("약점 · 내성", rs);
-      if (r.meet && r.meet.length) body += row("만나는 방법", r.hsp || (r.hs || []).includes(0) ? veilSpan(esc(r.meet[0])) : spText(r.meet[0]));
-      body += row("드롭", (r.dr || []).map(n => link(n, "item")).join(", "));
-      body += row("나오는 곳", [...new Set(r.wh || [])].map(n => link(n, "map")).join(", "));
+      body += row("Weaknesses · Resistances", rs);
+      if (r.meet && r.meet.length) body += row("How to meet", r.hsp || (r.hs || []).includes(0) ? veilSpan(esc(r.meet[0])) : spText(r.meet[0]));
+      body += row("Drop", (r.dr || []).map(n => link(n, "item")).join(", "));
+      body += row("Found in", [...new Set(r.wh || [])].map(n => link(n, "map")).join(", "));
       break; }
     case "item": {
       sub = [KIND_N[r.tab], r.g].filter(Boolean).join(" · ");
-      body = kv([[r.v ? num(r.v) : "", r.tab === "armor" ? "방어력" : "공격력"], [r.at || "", "공격 타입"]]);
-      if (r.ab) body += row("어빌리티", `<b>${esc(r.ab)}</b> ${esc(r.abd || "")}`);
-      if (r.fx) body += row("효과", esc(r.fx.split("\n")[0]));
+      body = kv([[r.v ? num(r.v) : "", r.tab === "armor" ? "DEF" : "ATK"], [r.at || "", "Attack type"]]);
+      if (r.ab) body += row("Abilities", `<b>${esc(r.ab)}</b> ${esc(r.abd || "")}`);
+      if (r.fx) body += row("Effect", esc(r.fx.split("\n")[0]));
       const src = r.src || [];
-      body += row("입수처", src.slice(0, 3).map(s => `${s[2] === "boss" ? veilSpan(esc(s[1])) : spText(s[1])} <span class="muted">${esc(s[0])}</span>`).join("<br>") + (src.length > 3 ? `<br><span class="muted">외 ${src.length - 3}곳</span>` : ""));
-      if (r.rc) body += row("제작 재료", (r.sp || []).includes("secret") ? veilSpan(r.rc.map(([mk, n]) => `${esc((K[mk] || {}).n || mk)} × ${n}`).join(", ")) : r.rc.map(([mk, n]) => `${K[mk] ? link(K[mk].n, "item") : esc(mk)} × ${n}`).join(", "));
+      body += row("Where to get", src.slice(0, 3).map(s => `${s[2] === "boss" ? veilSpan(esc(s[1])) : spText(s[1])} <span class="muted">${esc(s[0])}</span>`).join("<br>") + (src.length > 3 ? `<br><span class="muted">+ ${src.length - 3} more</span>` : ""));
+      if (r.rc) body += row("Crafting materials", (r.sp || []).includes("secret") ? veilSpan(r.rc.map(([mk, n]) => `${esc((K[mk] || {}).n || mk)} × ${n}`).join(", ")) : r.rc.map(([mk, n]) => `${K[mk] ? link(K[mk].n, "item") : esc(mk)} × ${n}`).join(", "));
       break; }
     case "char":
       sub = [r.job, r.wt].filter(Boolean).join(" · ");
-      if (r.join) body = row("합류", [r.join.where ? link(r.join.where, "map") : "", r.join.cond ? spText(r.join.cond) : ""].filter(Boolean).join(" · "));
+      if (r.join) body = row("Joining", [r.join.where ? link(r.join.where, "map") : "", r.join.cond ? spText(r.join.cond) : ""].filter(Boolean).join(" · "));
       break;
     case "quest":
-      sub = [r.kind, r.lv ? `권장 Lv ${r.lv}` : ""].filter(Boolean).join(" · ");
-      body = row("수주처", r.where ? link(r.where, "map") : "") + row("발생 조건", r.cond ? spText(r.cond) : "") +
-        row("보상", (r.rw || []).map(([n, a]) => `${link(n, "item")}${a > 1 ? ` × ${num(a)}` : ""}`).join(", "));
+      sub = [r.kind, r.lv ? `Rec. Lv ${r.lv}` : ""].filter(Boolean).join(" · ");
+      body = row("Taken at", r.where ? link(r.where, "map") : "") + row("Requirements", r.cond ? spText(r.cond) : "") +
+        row("Reward", (r.rw || []).map(([n, a]) => `${link(n, "item")}${a > 1 ? ` × ${num(a)}` : ""}`).join(", "));
       break;
     case "badge":
       sub = [r.cat, r.pc].filter(Boolean).join(" · ");
-      body = r.t.map(t => row(esc(t.n), `<b>${esc(t.a)}</b> ${esc(t.d)}`)).join("") + row("획득처", r.src && r.src.e ? link(r.src.e, "enemy") : r.src && r.src.q ? r.src.q.map(([q]) => link(q, "quest")).join(", ") : r.src && r.src.t ? esc(r.src.t[0][0]) : r.src && r.src.x ? (r.src.boss ? veilSpan(esc(r.src.x)) : esc(r.src.x)) : "");
+      body = r.t.map(t => row(esc(t.n), `<b>${esc(t.a)}</b> ${esc(t.d)}`)).join("") + row("Where to get", r.src && r.src.e ? link(r.src.e, "enemy") : r.src && r.src.q ? r.src.q.map(([q]) => link(q, "quest")).join(", ") : r.src && r.src.t ? esc(r.src.t[0][0]) : r.src && r.src.x ? (r.src.boss ? veilSpan(esc(r.src.x)) : esc(r.src.x)) : "");
       break;
     case "cat":
-      sub = [r.per ? "성격 · " + r.per : "", r.era].filter(Boolean).join(" · ");
-      body = row("거처", `${link(r.wh, "map")}${r.area ? ` · ${esc(r.area)}` : ""}${r.pos ? ` <span class="muted">(${esc(r.pos)})</span>` : ""}`) + row("조건", r.cond ? spText(r.cond) : "") + row("좋아하는 것", esc(r.like || ""));
+      sub = [r.per ? "Personality · " + r.per : "", r.era].filter(Boolean).join(" · ");
+      body = row("Home", `${link(r.wh, "map")}${r.area ? ` · ${esc(r.area)}` : ""}${r.pos ? ` <span class="muted">(${esc(r.pos)})</span>` : ""}`) + row("Condition", r.cond ? spText(r.cond) : "") + row("Likes", esc(r.like || ""));
       break;
     case "memory":
       sub = [r.kind, r.g].filter(Boolean).join(" · ");
-      body = row("장소", r.wh ? `${link(r.wh, "map")}${r.area ? ` · ${esc(r.area)}` : ""}` : "") + row("해금 조건", r.cond ? spText(r.cond) : "");
+      body = row("Location", r.wh ? `${link(r.wh, "map")}${r.area ? ` · ${esc(r.area)}` : ""}` : "") + row("Unlock condition", r.cond ? spText(r.cond) : "");
       break;
     case "map":
-      sub = `적 레벨 ${range(r.lv)}`;
-      body = kv([[r.en.length, "적"], [r.ch.filter(c => c.o !== "이벤트").length, "보물"], [r.sh.length, "상점 품목"]]);
+      sub = `Enemy level ${range(r.lv)}`;
+      body = kv([[r.en.length, "Enemies"], [r.ch.filter(c => c.o !== "Event").length, "Treasure"], [r.sh.length, "Shop items"]]);
       break;
   }
   const ic = r._t === "quest" ? "" : `<div class="ic">${icon(r.i, r.n)}</div>`;
-  return `<div class="ph">${ic}<div><b>${esc(r.n)}</b><div class="sub">${esc(sub)}</div></div></div>${body}<button class="more" data-k="${esc(r.k)}">전체 보기 →</button>`;
+  return `<div class="ph">${ic}<div><b>${esc(r.n)}</b><div class="sub">${esc(sub)}</div></div></div>${body}<button class="more" data-k="${esc(r.k)}">Full details →</button>`;
 }
 function peek(a){
   const k = a.dataset.p, r = K[k]; if (!r) return;
@@ -594,13 +594,13 @@ function peek(a){
   after.after(el);
   a.setAttribute("aria-expanded", "true");
 }
-const CRUMB = {char:"동료", item:"장비 · 아이템", enemy:"적", map:"지역", quest:"퀘스트", badge:"배지", cat:"고양이", memory:"기억"};
+const CRUMB = {char:"Allies", item:"Equipment · Items", enemy:"Enemies", map:"Areas", quest:"Quests", badge:"Badges", cat:"Cats", memory:"Journal & Memories"};
 function open(k, push){
   const r = K[k]; if (!r) return;
   S.seen.add(k);
   const body = {char:charDetail, item:itemDetail, enemy:enemyDetail, map:mapDetail, quest:questDetail, badge:badgeDetail, cat:catDetail, memory:memoryDetail}[r._t](r);
   const d = $("#detail");
-  d.innerHTML = `<div class="dh"><span class="crumb">${CRUMB[r._t]}</span><button class="x" data-close aria-label="닫기"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="#2F3437" stroke-width="1.8" stroke-linecap="round"/></svg></button></div><div class="db">${body}</div>`;
+  d.innerHTML = `<div class="dh"><span class="crumb">${CRUMB[r._t]}</span><button class="x" data-close aria-label="Close"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="#2F3437" stroke-width="1.8" stroke-linecap="round"/></svg></button></div><div class="db">${body}</div>`;
   d.classList.add("on"); d.setAttribute("aria-hidden", "false"); d.scrollTop = 0;
   $("#scrim").classList.add("on");
   const tab = r._t === "item" ? TAB_OF_ITEM(r.tab) : {char:"chars", enemy:"enemies", map:"maps", quest:"quests", badge:"badges", cat:"cats", memory:"memories"}[r._t];
@@ -613,20 +613,20 @@ function close(){
 }
 function setTab(t){ S.tab = t; window.scrollTo({top:0}); render(); history.replaceState(null, "", `#${t}`); }
 
-/* ---------------- 이벤트 ---------------- */
+
 document.addEventListener("click", e => {
   const t = e.target;
   const sp = t.closest(".sp,.spb"); if (sp && !S.spoil && !sp.classList.contains("shown")){ sp.classList.add("shown"); e.preventDefault(); return; }
   const tb = t.closest(".tab"); if (tb){ setTab(tb.dataset.tab); return; }
   const ch = t.closest(".chip"); if (ch){ const fn = ch.parentElement.dataset.f, f = S.f[S.tab] || (S.f[S.tab] = {}); f[fn] = ch.dataset.v || ""; if (FACETS[S.tab][0][0] === fn) delete f[FACETS[S.tab][1] && FACETS[S.tab][1][0]]; renderChips(); renderGrid(); return; }
-  const so = t.closest("[data-s]"); if (so){ const i = +so.dataset.s, st = S.sort[S.tab];   // 같은 기준을 다시 누르면 방향만 뒤집는다
+  const so = t.closest("[data-s]"); if (so){ const i = +so.dataset.s, st = S.sort[S.tab];   
     if (i < 0) delete S.sort[S.tab]; else S.sort[S.tab] = st && st[0] === i ? [i, -st[1]] : [i, SORTS[S.tab][i][2]];
     renderSort(); renderGrid(); return; }
   const pk = t.closest("[data-p]"); if (pk){ e.preventDefault(); peek(pk); return; }
   const lk = t.closest("[data-k]");
   if (lk){
     e.preventDefault();
-    // 가린 카드는 첫 번째 누름에 가림만 걷는다 — 두 번째 누름에 연다
+    
     if (lk.classList.contains("veil") && !S.spoil){ S.seen.add(lk.dataset.k); lk.classList.remove("veil"); return; }
     open(lk.dataset.k); return;
   }
@@ -638,7 +638,7 @@ document.addEventListener("keydown", e => {
   else if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-p]")) { peek(e.target); e.preventDefault(); }
 });
 let qt; $("#q").addEventListener("input", e => { clearTimeout(qt); qt = setTimeout(() => { S.q = e.target.value; renderTabs(); renderGrid(); }, 120); });
-document.addEventListener("change", e => {                          // 2026-09-27 드롭다운 필터
+document.addEventListener("change", e => {                          
   if (!e.target.matches(".fsel")) return;
   const fn = e.target.parentElement.dataset.f, f = S.f[S.tab] || (S.f[S.tab] = {});
   f[fn] = e.target.value; if (FACETS[S.tab][0][0] === fn) delete f[FACETS[S.tab][1] && FACETS[S.tab][1][0]];
@@ -648,7 +648,7 @@ $("#spoil").addEventListener("change", e => { S.spoil = e.target.checked; docume
 
 (async () => {
   S.spoil = store.get("aebg.spoil") === "1"; $("#spoil").checked = S.spoil; document.body.classList.toggle("spoil", S.spoil);
-  try { await load(); } catch(err){ $("#grid").innerHTML = `<div class="empty">데이터를 불러오지 못했습니다. 로컬에서 볼 때는 간단한 웹 서버로 여세요.</div>`; return; }
+  try { await load(); } catch(err){ $("#grid").innerHTML = `<div class="empty">Could not load data. When viewing locally, open it through a simple web server.</div>`; return; }
   const [t, k] = decodeURIComponent(location.hash.slice(1)).split("/");
   if (TABS.some(x => x.id === t)) S.tab = t;
   render();
