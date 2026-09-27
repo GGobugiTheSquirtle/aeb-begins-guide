@@ -334,7 +334,8 @@ function sorted(list){
 }
 function renderSort(){
   const st = S.sort[S.tab];
-  $("#sort").innerHTML = `<span class="lbl">정렬</span><button data-s="-1" aria-pressed="${!st}">기본</button>` +
+  // 2026-09-27 기본 순서 = 게임 도감 목록 순서(지역 · 퀘스트는 게임 도감이 없어 「기본」)
+  $("#sort").innerHTML = `<span class="lbl">정렬</span><button data-s="-1" aria-pressed="${!st}">${S.tab === "maps" || S.tab === "quests" ? "기본" : "도감 순"}</button>` +
     (SORTS[S.tab] || []).map(([n, , d], i) => { const on = st && st[0] === i; const dir = on ? st[1] : d;
       return `<button data-s="${i}" aria-pressed="${!!on}" title="${dir > 0 ? "낮은 순 · 가나다순" : "높은 순"}">${esc(n)}${on ? (dir > 0 ? " ↑" : " ↓") : ""}</button>`; }).join("");
 }
