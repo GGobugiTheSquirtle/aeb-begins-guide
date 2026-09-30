@@ -415,6 +415,7 @@ function itemDetail(r){
   if (r.gift) h += `<h3>선물로 주면</h3><ul class="list"><li><span class="l">${r.gift["좋음"].map(n => link(n, "char")).join(", ") || "—"}</span><span class="r">${tag("좋아함", "바람")}</span></li><li><span class="l">${r.gift["나쁨"].map(n => link(n, "char")).join(", ") || "—"}</span><span class="r">${tag("싫어함", "불")}</span></li></ul>`;
   return h;
 }
+const WP_BEST = {early: "엔딩 전 최선", ending: "엔딩 후 최선", ng: "뉴 게임+ 최선"};
 function charDetail(r){
   let h = `<div class="hero pc"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.nj, r.job, r.wt].filter(Boolean).join(" · "))}</div>${r.like ? `<div class="tags">${tag("좋아하는 것 · " + r.like)}</div>` : ""}</div></div>`;
   if (r.intro) h += `<p class="prose" style="margin-top:14px">${esc(r.intro)}</p>`;
@@ -430,6 +431,9 @@ function charDetail(r){
   }
   if (r.stacks) h += `<h3>고유 게이지</h3><ul class="list">${r.stacks.map(([n, mx, d]) => `<li><span class="l"><b>${esc(n)}</b> ${esc(d || "")}</span><span class="r">최대 ${esc(mx)}</span></li>`).join("")}</ul>`;
   if (r.boards) h += `<h3>어빌리티 보드</h3>` + r.boards.map(b => `<details class="fold"><summary>${esc(b.n)}</summary><div class="in"><p class="prose muted">${esc(b.d)}</p><ul class="list">${b.nodes.map(([dp, n, d]) => `<li><span class="l"><b>${esc(n)}</b>${d && d !== n ? ` <span class="muted">${esc(d)}</span>` : ""}</span><span class="r">${dp} DP</span></li>`).join("")}</ul></div></details>`).join("");
+  // 2026-09-30 무기 추천 순서 — 공격 한 번의 대미지 계산 순(Lv90 · 퀘스트 배지 착용). 뉴 게임+ 무기 이름은 가린다
+  if (r.wp) h += `<h3>무기 추천 순서</h3><ul class="list">${r.wp.map(([k, n, w, b, ng, d]) => `<li><span class="l">${k}. ${link(n, "item", !!ng)} ${b.map(x => tag(WP_BEST[x], "바람")).join(" ")}<br><span class="muted">${esc(w)}</span></span><span class="r">${d == null ? "기준" : `<b>${d > 0 ? "+" : ""}${d}%</b>`}${ng ? " " + tag("2회차", "ng") : ""}</span></li>`).join("")}</ul>` +
+    (r.wpn ? `<p class="prose">${esc(r.wpn)}</p>` : "") + `<p class="prose muted">공격 한 번의 대미지를 계산한 예상 순서입니다. %는 「기준」 무기 대비 예상 대미지 차이입니다(Lv90 · 퀘스트 배지 착용 기준, 게임 안에서 검증하지 않았습니다). 위 무기를 아직 못 얻었으면 가진 무기 중 가장 위의 것을 쓰세요.</p>`;
   if (r.good || r.bad) h += `<h3>선물</h3><ul class="list"><li><span class="l">${(r.good || []).map(n => link(n, "item")).join(", ") || "—"}</span><span class="r">${tag("좋아함", "바람")}</span></li><li><span class="l">${(r.bad || []).map(n => link(n, "item")).join(", ") || "—"}</span><span class="r">${tag("싫어함", "불")}</span></li></ul>`;
   if (r.titles) h += `<h3>친밀도 칭호</h3><ul class="list">${r.titles.map(([t, q], i) => `<li><span class="l">${q ? link(q, "quest") : esc(t)}</span><span class="r">${i === 0 ? "처음부터" : `친밀도 ${i + 1}`}</span></li>`).join("")}</ul>`;
   // 2026-09-27 이 동료의 배지 · 동료와의 기억

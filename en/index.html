@@ -415,6 +415,7 @@ function itemDetail(r){
   if (r.gift) h += `<h3>As a gift</h3><ul class="list"><li><span class="l">${r.gift["좋음"].map(n => link(n, "char")).join(", ") || "—"}</span><span class="r">${tag("Likes", "Wind")}</span></li><li><span class="l">${r.gift["나쁨"].map(n => link(n, "char")).join(", ") || "—"}</span><span class="r">${tag("Dislikes", "Fire")}</span></li></ul>`;
   return h;
 }
+const WP_BEST = {early: "Best before ending", ending: "Best after ending", ng: "Best in New Game+"};
 function charDetail(r){
   let h = `<div class="hero pc"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.nj, r.job, r.wt].filter(Boolean).join(" · "))}</div>${r.like ? `<div class="tags">${tag("Likes · " + r.like)}</div>` : ""}</div></div>`;
   if (r.intro) h += `<p class="prose" style="margin-top:14px">${esc(r.intro)}</p>`;
@@ -430,6 +431,9 @@ function charDetail(r){
   }
   if (r.stacks) h += `<h3>Unique gauge</h3><ul class="list">${r.stacks.map(([n, mx, d]) => `<li><span class="l"><b>${esc(n)}</b> ${esc(d || "")}</span><span class="r">Max ${esc(mx)}</span></li>`).join("")}</ul>`;
   if (r.boards) h += `<h3>Ability boards</h3>` + r.boards.map(b => `<details class="fold"><summary>${esc(b.n)}</summary><div class="in"><p class="prose muted">${esc(b.d)}</p><ul class="list">${b.nodes.map(([dp, n, d]) => `<li><span class="l"><b>${esc(n)}</b>${d && d !== n ? ` <span class="muted">${esc(d)}</span>` : ""}</span><span class="r">${dp} DP</span></li>`).join("")}</ul></div></details>`).join("");
+  
+  if (r.wp) h += `<h3>Weapon ranking</h3><ul class="list">${r.wp.map(([k, n, w, b, ng, d]) => `<li><span class="l">${k}. ${link(n, "item", !!ng)} ${b.map(x => tag(WP_BEST[x], "Wind")).join(" ")}<br><span class="muted">${esc(w)}</span></span><span class="r">${d == null ? "Baseline" : `<b>${d > 0 ? "+" : ""}${d}%</b>`}${ng ? " " + tag("2nd Playthrough", "ng") : ""}</span></li>`).join("")}</ul>` +
+    (r.wpn ? `<p class="prose">${esc(r.wpn)}</p>` : "") + `<p class="prose muted">Expected ranking by calculated damage of a single attack. % = expected damage difference vs. the “Baseline” weapon (Lv90, with quest badges equipped; not verified in game). If you don't have a weapon yet, use the highest one you own.</p>`;
   if (r.good || r.bad) h += `<h3>Gifts</h3><ul class="list"><li><span class="l">${(r.good || []).map(n => link(n, "item")).join(", ") || "—"}</span><span class="r">${tag("Likes", "Wind")}</span></li><li><span class="l">${(r.bad || []).map(n => link(n, "item")).join(", ") || "—"}</span><span class="r">${tag("Dislikes", "Fire")}</span></li></ul>`;
   if (r.titles) h += `<h3>Kinship titles</h3><ul class="list">${r.titles.map(([t, q], i) => `<li><span class="l">${q ? link(q, "quest") : esc(t)}</span><span class="r">${i === 0 ? "from the start" : `Kinship ${i + 1}`}</span></li>`).join("")}</ul>`;
   
