@@ -382,7 +382,7 @@ function card(r, i){
     case "cat": sub = [noTxt(r), r.wh, r.area].filter(Boolean).join(" · "); if (r.per) tags = tag(r.per); break;
     case "memory": sub = [r.g, r.wh].filter(Boolean).join(" · "); tags = tag(r.kind); break;
   }
-  if (r._t === "map") return `<button class="card map${vl}" style="--i:${i}" data-k="${esc(r.k)}"><div class="thumb">${r.i ? icon(r.i) : ""}</div><div class="body"><div class="nm">${esc(r.n)}</div><div class="sub">Lv ${range(r.lv)} · 적 ${r.en.length} · 보물 ${r.ch.filter(c => c.o !== "이벤트").length}</div></div></button>`;
+  if (r._t === "map") return `<button class="card map${vl}" style="--i:${i}" data-k="${esc(r.k)}"><div class="thumb">${r.i ? icon(r.i) : ""}</div><div class="body"><div class="nm">${esc(r.n)}</div><div class="sub">Lv ${range(r.lv)}${r.ng ? ` · 뉴 게임+ Lv ${range(r.ng)}` : ""} · 적 ${r.en.length} · 보물 ${r.ch.filter(c => c.o !== "이벤트").length}</div></div></button>`;
   return `<button class="card${vl}" style="--i:${i}" data-k="${esc(r.k)}">${r._t === "quest" ? "" : `<div class="ic">${icon(r.i, r.n)}</div>`}<div style="min-width:0"><div class="nm">${esc(r.n)}</div><div class="sub">${esc(sub)}</div>${tags ? `<div class="tags">${tags}</div>` : ""}</div></button>`;
 }
 function renderGrid(){
@@ -476,7 +476,7 @@ function chestList(ch){
   return note + groups.map(g => (g.a ? `<div class="grp">${esc(g.a)}</div>` : "") + `<ul class="list">${g.rows.map(row).join("")}</ul>`).join("");
 }
 function mapDetail(r){
-  let h = (r.i ? `<div class="banner">${icon(r.i)}</div>` : "") + `<h2>${esc(r.n)}</h2><div class="sub" style="margin-top:4px">적 레벨 ${range(r.lv)}</div>`;
+  let h = (r.i ? `<div class="banner">${icon(r.i)}</div>` : "") + `<h2>${esc(r.n)}</h2><div class="sub" style="margin-top:4px">적 레벨 ${range(r.lv)}${r.ng ? ` · 뉴 게임+ 적 레벨 ${range(r.ng)}` : ""}</div>`;
   if (r.en.length) h += `<h3>나오는 적</h3><ul class="list">${r.en.map(([n, a, b]) => `<li><span class="l">${link(n, "enemy")}</span><span class="r">Lv ${a === b ? a : `${a}–${b}`}</span></li>`).join("")}</ul>`;
   if (r.ch.length) h += `<h3>보물</h3>` + chestList(r.ch);
   // 2026-09-27 떨구는 적은 재료 아래 줄로 — 오른쪽 칸(nowrap)에 몰면 모바일에서 가로로 넘친다
@@ -579,7 +579,7 @@ function mini(r){
       body = row("장소", r.wh ? `${link(r.wh, "map")}${r.area ? ` · ${esc(r.area)}` : ""}` : "") + row("해금 조건", r.cond ? spText(r.cond) : "");
       break;
     case "map":
-      sub = `적 레벨 ${range(r.lv)}`;
+      sub = `적 레벨 ${range(r.lv)}${r.ng ? ` · 뉴 게임+ 적 레벨 ${range(r.ng)}` : ""}`;   // 2026-10-02 뉴 게임+ 필드 적 레벨
       body = kv([[r.en.length, "적"], [r.ch.filter(c => c.o !== "이벤트").length, "보물"], [r.sh.length, "상점 품목"]]);
       break;
   }

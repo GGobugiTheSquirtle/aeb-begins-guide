@@ -382,7 +382,7 @@ function card(r, i){
     case "cat": sub = [noTxt(r), r.wh, r.area].filter(Boolean).join(" · "); if (r.per) tags = tag(r.per); break;
     case "memory": sub = [r.g, r.wh].filter(Boolean).join(" · "); tags = tag(r.kind); break;
   }
-  if (r._t === "map") return `<button class="card map${vl}" style="--i:${i}" data-k="${esc(r.k)}"><div class="thumb">${r.i ? icon(r.i) : ""}</div><div class="body"><div class="nm">${esc(r.n)}</div><div class="sub">Lv ${range(r.lv)} · Enemies ${r.en.length} · Treasure ${r.ch.filter(c => c.o !== "Event").length}</div></div></button>`;
+  if (r._t === "map") return `<button class="card map${vl}" style="--i:${i}" data-k="${esc(r.k)}"><div class="thumb">${r.i ? icon(r.i) : ""}</div><div class="body"><div class="nm">${esc(r.n)}</div><div class="sub">Lv ${range(r.lv)}${r.ng ? ` · New Game+ Lv ${range(r.ng)}` : ""} · Enemies ${r.en.length} · Treasure ${r.ch.filter(c => c.o !== "Event").length}</div></div></button>`;
   return `<button class="card${vl}" style="--i:${i}" data-k="${esc(r.k)}">${r._t === "quest" ? "" : `<div class="ic">${icon(r.i, r.n)}</div>`}<div style="min-width:0"><div class="nm">${esc(r.n)}</div><div class="sub">${esc(sub)}</div>${tags ? `<div class="tags">${tags}</div>` : ""}</div></button>`;
 }
 function renderGrid(){
@@ -476,7 +476,7 @@ function chestList(ch){
   return note + groups.map(g => (g.a ? `<div class="grp">${esc(g.a)}</div>` : "") + `<ul class="list">${g.rows.map(row).join("")}</ul>`).join("");
 }
 function mapDetail(r){
-  let h = (r.i ? `<div class="banner">${icon(r.i)}</div>` : "") + `<h2>${esc(r.n)}</h2><div class="sub" style="margin-top:4px">Enemy level ${range(r.lv)}</div>`;
+  let h = (r.i ? `<div class="banner">${icon(r.i)}</div>` : "") + `<h2>${esc(r.n)}</h2><div class="sub" style="margin-top:4px">Enemy level ${range(r.lv)}${r.ng ? ` · New Game+ enemy level ${range(r.ng)}` : ""}</div>`;
   if (r.en.length) h += `<h3>Enemies</h3><ul class="list">${r.en.map(([n, a, b]) => `<li><span class="l">${link(n, "enemy")}</span><span class="r">Lv ${a === b ? a : `${a}–${b}`}</span></li>`).join("")}</ul>`;
   if (r.ch.length) h += `<h3>Treasure</h3>` + chestList(r.ch);
   
@@ -579,7 +579,7 @@ function mini(r){
       body = row("Location", r.wh ? `${link(r.wh, "map")}${r.area ? ` · ${esc(r.area)}` : ""}` : "") + row("Unlock condition", r.cond ? spText(r.cond) : "");
       break;
     case "map":
-      sub = `Enemy level ${range(r.lv)}`;
+      sub = `Enemy level ${range(r.lv)}${r.ng ? ` · New Game+ enemy level ${range(r.ng)}` : ""}`;   
       body = kv([[r.en.length, "Enemies"], [r.ch.filter(c => c.o !== "Event").length, "Treasure"], [r.sh.length, "Shop items"]]);
       break;
   }
