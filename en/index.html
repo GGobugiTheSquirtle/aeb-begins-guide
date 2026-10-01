@@ -273,6 +273,9 @@ function link(name, type, veil){
 }
 const weak = e => Object.entries(e.rs || {}).filter(([,v]) => v.includes("Weak")).map(([k]) => k);
 
+const noTxt = r => r.no ? `Codex ${r.no[0]}` : r.dlc ? "DLC" : "";
+const noFull = r => r.no ? `Codex ${r.no[0]} / ${r.no[1]}` : r.dlc ? "DLC" : "";
+
 async function load(){
   const names = ["chars","items","enemies","maps","quests","badges","cats","memories"];
   const got = await Promise.all(names.map(n => fetch(`data/${n}.json`).then(r => r.json())));
@@ -299,7 +302,7 @@ const FACETS = {
   enemies: [["Type", r => r.tabn], ["Weak", r => weak(r)]],
   quests:  [["Kind", r => r.kind]],
   maps:    [],
-  badges:  [["Type", r => r.cat]],
+  badges:  [["Codex tab", r => r.bt], ["Type", r => r.cat]],   
   cats:    [["Era", r => r.era], ["Home", r => r.wh]],
   memories:[["Kind", r => r.kind], ["Group", r => r.g]]};
 function matches(r){
@@ -370,13 +373,13 @@ function card(r, i){
   switch(r._t){
     case "char": sub = [r.job, r.wt].filter(Boolean).join(" · "); if (r.ch) tags = tag(`Ch. ${r.ch} · joins`); break;
     case "item":
-      sub = [KIND_N[r.tab], r.g].filter(Boolean).join(" · ") + (r.v ? ` · ${r.tab === "armor" ? "DEF" : "ATK"} ${num(r.v)}` : "");
+      sub = [noTxt(r), KIND_N[r.tab], r.g].filter(Boolean).join(" · ") + (r.v ? ` · ${r.tab === "armor" ? "DEF" : "ATK"} ${num(r.v)}` : "");
       if (r.ab) tags = tag(r.ab); else if (r.fx) tags = tag(r.fx.split("\n")[0]);
       break;
-    case "enemy": sub = `${esub(r)} · Lv ${range(r.lv)}`; tags = weak(r).map(w => tag(w, "Weak")).join(""); break;
+    case "enemy": sub = `${[noTxt(r), esub(r)].filter(Boolean).join(" · ")} · Lv ${range(r.lv)}`; tags = weak(r).map(w => tag(w, "Weak")).join(""); break;
     case "quest": sub = [r.where, r.lv ? `Lv ${r.lv}` : ""].filter(Boolean).join(" · "); tags = tag(r.kind); break;
-    case "badge": sub = [r.cat, r.pc].filter(Boolean).join(" · "); tags = tag(r.t[r.t.length - 1].a); break;
-    case "cat": sub = [r.wh, r.area].filter(Boolean).join(" · "); if (r.per) tags = tag(r.per); break;
+    case "badge": sub = [noTxt(r), r.cat, r.pc].filter(Boolean).join(" · "); tags = tag(r.t[r.t.length - 1].a); break;
+    case "cat": sub = [noTxt(r), r.wh, r.area].filter(Boolean).join(" · "); if (r.per) tags = tag(r.per); break;
     case "memory": sub = [r.g, r.wh].filter(Boolean).join(" · "); tags = tag(r.kind); break;
   }
   if (r._t === "map") return `<button class="card map${vl}" style="--i:${i}" data-k="${esc(r.k)}"><div class="thumb">${r.i ? icon(r.i) : ""}</div><div class="body"><div class="nm">${esc(r.n)}</div><div class="sub">Lv ${range(r.lv)} · Enemies ${r.en.length} · Treasure ${r.ch.filter(c => c.o !== "Event").length}</div></div></button>`;
@@ -400,7 +403,7 @@ function itemDetail(r){
   const st = [];
   if (r.v) st.push([num(r.v), r.tab === "armor" ? "DEF" : "ATK"]);
   if (r.at) st.push([r.at, "Attack type"]);
-  let h = `<div class="hero"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([KIND_N[r.tab], r.g].filter(Boolean).join(" · "))}</div></div></div>`;
+  let h = `<div class="hero"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([KIND_N[r.tab], r.g, noFull(r)].filter(Boolean).join(" · "))}</div></div></div>`;
   if (st.length) h += `<div class="stats">${st.map(([v, l]) => `<div><b>${esc(v)}</b><span>${l}</span></div>`).join("")}</div>`;
   if (r.ab) h += `<h3>Abilities</h3><p class="prose"><b>${esc(r.ab)}</b><br>${esc(r.abd || "")}</p>`;
   if (r.fx) h += `<h3>Effect</h3><p class="prose">${esc(r.fx)}</p>`;
@@ -445,7 +448,7 @@ function charDetail(r){
 }
 const esub = r => [r.tabn, r.cat].filter((x, i, a) => x && a.indexOf(x) === i).join(" · ");   
 function enemyDetail(r){
-  let h = `<div class="hero"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc(esub(r))}</div></div></div>`;
+  let h = `<div class="hero"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([esub(r), noFull(r)].filter(Boolean).join(" · "))}</div></div></div>`;
   const st = [[range(r.lv), "Level"], [range(r.hp), "HP"]];
   if (r.exp != null) st.push([num(r.exp), "EXP"]);
   if (r.gold != null) st.push([num(r.gold), "Git"]);
@@ -506,7 +509,7 @@ function badgeSrc(src){
   return "";
 }
 function badgeDetail(r){
-  let h = `<div class="hero"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.cat, r.pc].filter(Boolean).join(" · "))}</div></div></div>`;
+  let h = `<div class="hero"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.bt, noFull(r), r.cat, r.pc].filter(Boolean).join(" · "))}</div></div></div>`;
   h += `<h3>${r.t.length > 1 ? "Grades" : "Effect"}</h3>` + r.t.map(t => `<div class="skill"><div class="top"><span class="ic" style="flex-basis:36px;width:36px;height:36px">${icon(t.i, t.n)}</span><b>${esc(t.n)}</b></div>` +
     `<div class="d"><b>${esc(t.a)}</b> — ${esc(t.d)}</div>` + (t.eq ? `<div class="ev">Equip · ${esc(t.eq)}</div>` : "") +
     (t.sk || []).map(k => `<div class="ev">Skill 『${esc(k.n)}』${k.mp != null ? ` MP ${k.mp}` : ""}${k.ch ? ` · Chain ${k.ch}${k.cc ? `(${esc(k.cc)})` : ""}` : ""} — ${esc(k.d)}</div>`).join("") + `</div>`).join("");
@@ -514,7 +517,7 @@ function badgeDetail(r){
   return h;
 }
 function catDetail(r){
-  let h = `<div class="hero"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.per ? "Personality · " + r.per : "", r.era].filter(Boolean).join(" · "))}</div></div></div>`;
+  let h = `<div class="hero"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.per ? "Personality · " + r.per : "", r.era, noFull(r)].filter(Boolean).join(" · "))}</div></div></div>`;
   if (r.like) h += `<h3>Likes</h3><p class="prose">${esc(r.like)}</p>`;
   h += `<h3>Home</h3><ul class="list"><li><span class="l">${link(r.wh, "map")}${r.area ? ` · ${esc(r.area)}` : ""}${r.pos ? `<span class="from">${esc(r.pos)} — starting spot</span>` : ""}</span></li></ul>`;
   if (r.cond) h += `<h3>Appearance condition</h3><p class="prose">${spText(r.cond)}</p>`;
@@ -537,7 +540,7 @@ function mini(r){
   let sub = "", body = "";
   switch(r._t){
     case "enemy": {
-      sub = esub(r);
+      sub = [esub(r), noFull(r)].filter(Boolean).join(" · ");
       body = kv([[range(r.lv), "Lv"], [range(r.hp), "HP"], [r.exp != null ? num(r.exp) : "", "EXP"], [r.gold != null ? num(r.gold) : "", "Git"]]);
       const rs = RES.flatMap(k => ((r.rs || {})[k] || []).map(v => tag(`${k} ${v}`, v))).join(" ");
       body += row("Weaknesses · Resistances", rs);
@@ -546,7 +549,7 @@ function mini(r){
       body += row("Found in", [...new Set(r.wh || [])].map(n => link(n, "map")).join(", "));
       break; }
     case "item": {
-      sub = [KIND_N[r.tab], r.g].filter(Boolean).join(" · ");
+      sub = [KIND_N[r.tab], r.g, noFull(r)].filter(Boolean).join(" · ");
       body = kv([[r.v ? num(r.v) : "", r.tab === "armor" ? "DEF" : "ATK"], [r.at || "", "Attack type"]]);
       if (r.ab) body += row("Abilities", `<b>${esc(r.ab)}</b> ${esc(r.abd || "")}`);
       if (r.fx) body += row("Effect", esc(r.fx.split("\n")[0]));
@@ -564,11 +567,11 @@ function mini(r){
         row("Reward", (r.rw || []).map(([n, a]) => `${link(n, "item")}${a > 1 ? ` × ${num(a)}` : ""}`).join(", "));
       break;
     case "badge":
-      sub = [r.cat, r.pc].filter(Boolean).join(" · ");
+      sub = [r.bt, noFull(r), r.cat, r.pc].filter(Boolean).join(" · ");
       body = r.t.map(t => row(esc(t.n), `<b>${esc(t.a)}</b> ${esc(t.d)}`)).join("") + row("Where to get", r.src && r.src.e ? link(r.src.e, "enemy") : r.src && r.src.q ? r.src.q.map(([q]) => link(q, "quest")).join(", ") : r.src && r.src.t ? esc(r.src.t[0][0]) : r.src && r.src.x ? (r.src.boss ? veilSpan(esc(r.src.x)) : esc(r.src.x)) : "");
       break;
     case "cat":
-      sub = [r.per ? "Personality · " + r.per : "", r.era].filter(Boolean).join(" · ");
+      sub = [r.per ? "Personality · " + r.per : "", r.era, noFull(r)].filter(Boolean).join(" · ");
       body = row("Home", `${link(r.wh, "map")}${r.area ? ` · ${esc(r.area)}` : ""}${r.pos ? ` <span class="muted">(${esc(r.pos)})</span>` : ""}`) + row("Condition", r.cond ? spText(r.cond) : "") + row("Likes", esc(r.like || ""));
       break;
     case "memory":
