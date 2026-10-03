@@ -471,11 +471,15 @@ const esub = r => [r.tabn, r.cat].filter((x, i, a) => x && a.indexOf(x) === i).j
 function enemyDetail(r){
   let h = `<div class="hero"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([esub(r), noFull(r)].filter(Boolean).join(" · "))}</div></div></div>`;
   const st = [[range(r.lv), "레벨"], [range(r.hp), "HP"]];
+  if (r.ngl) st.push([range(r.ngl), "뉴 게임+ 레벨"]);   // 2026-10-03 20:00
   if (r.exp != null) st.push([num(r.exp), "경험치"]);
   if (r.gold != null) st.push([num(r.gold), "Git"]);
   h += `<div class="stats">${st.map(([v, l]) => `<div><b>${esc(v)}</b><span>${l}</span></div>`).join("")}</div>`;
   if (r.meet && r.meet.length){ const b = `<ul class="list">${r.meet.map((x, i) => `<li><span class="l">${(r.hs || []).includes(i) ? veilSpan(esc(x)) : spText(x)}</span></li>`).join("")}</ul>`;
     h += `<h3>만나는 방법</h3>` + (r.hsp ? `<div class="spwrap"><div class="spb" tabindex="0">${b}</div><div class="hint">스포일러 — 눌러서 보기</div></div>` : b); }
+  // 2026-10-03 20:00 뉴 게임+ 에서 — 레벨 · HP · 상대가 바뀌는지(게임 문장만). 숨긴 보스는 통째로, 시크릿 보스 이름 · 결말을 말하는 줄은 가린다
+  if (r.ngc && r.ngc.length){ const b = `<ul class="list">${r.ngc.map((x, i) => `<li><span class="l">${(r.ngh || []).includes(i) ? veilSpan(esc(x)) : esc(x)}</span></li>`).join("")}</ul>`;
+    h += `<h3>뉴 게임+ 에서</h3>` + (r.ngsp ? `<div class="spwrap"><div class="spb" tabindex="0">${b}</div><div class="hint">스포일러 — 눌러서 보기</div></div>` : b); }
   h += `<h3>약점 · 내성</h3><div class="rs">${RES.map(k => { const v = (r.rs || {})[k] || []; return `<div><div class="h">${k}</div>${v.length ? v.map(x => tag(x, x)).join(" ") : '<span class="muted">—</span>'}</div>`; }).join("")}</div>`;
   if (r.dr || r.bd) h += `<h3>드롭</h3><ul class="list">${(r.dr || []).map(n => `<li><span class="l">${link(n, "item")}</span></li>`).join("")}${r.bd ? `<li><span class="l">${link(r.bd, "badge")}</span><span class="r">배지</span></li>` : ""}</ul>`;
   if (r.wh) h += `<h3>나오는 곳</h3><ul class="list">${[...new Set(r.wh)].map(n => `<li><span class="l">${link(n, "map")}</span></li>`).join("")}</ul>`;
@@ -577,7 +581,7 @@ function mini(r){
   switch(r._t){
     case "enemy": {
       sub = [esub(r), noFull(r)].filter(Boolean).join(" · ");
-      body = kv([[range(r.lv), "Lv"], [range(r.hp), "HP"], [r.exp != null ? num(r.exp) : "", "경험치"], [r.gold != null ? num(r.gold) : "", "Git"]]);
+      body = kv([[range(r.lv), "Lv"], [range(r.hp), "HP"], [r.ngl ? range(r.ngl) : "", "뉴 게임+ Lv"], [r.exp != null ? num(r.exp) : "", "경험치"], [r.gold != null ? num(r.gold) : "", "Git"]]);   // 2026-10-03 20:00 뉴 게임+ Lv
       const rs = RES.flatMap(k => ((r.rs || {})[k] || []).map(v => tag(`${k} ${v}`, v))).join(" ");
       body += row("약점 · 내성", rs);
       if (r.meet && r.meet.length) body += row("만나는 방법", r.hsp || (r.hs || []).includes(0) ? veilSpan(esc(r.meet[0])) : spText(r.meet[0]));
