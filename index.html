@@ -48,6 +48,10 @@ h1{font:700 40px/1.1 var(--serif);letter-spacing:-.03em;color:var(--ink2);margin
 .bar{position:sticky;top:0;z-index:20;background:rgba(251,251,250,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .bar .wrap{display:flex;align-items:center;gap:6px;min-height:54px;overflow-x:auto;scrollbar-width:none}
 .bar .wrap::-webkit-scrollbar{display:none}
+/* 2026-10-03 17:50 좁은 화면 — 탭이 넘치면 가장자리를 흐려 더 있음을 알린다 */
+.bar .wrap.fr{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent)}
+.bar .wrap.fl{-webkit-mask-image:linear-gradient(90deg,transparent,#000 36px);mask-image:linear-gradient(90deg,transparent,#000 36px)}
+.bar .wrap.fl.fr{-webkit-mask-image:linear-gradient(90deg,transparent,#000 36px,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,transparent,#000 36px,#000 calc(100% - 36px),transparent)}
 .tab{border:0;background:none;padding:8px 12px;border-radius:6px;color:var(--muted);font-weight:600;white-space:nowrap;cursor:pointer}
 .tab:hover{color:var(--ink2);background:var(--soft)}
 .tab[aria-selected="true"]{color:var(--ink2);background:var(--surface);box-shadow:inset 0 0 0 1px var(--line)}
@@ -288,9 +292,13 @@ async function load(){
   const SK = new Map(), used = {};
   const add = (s, own) => { const key = s.n + "\u0001" + s.d; let r = SK.get(key);
     if (!r){ used[s.n] = (used[s.n] || 0) + 1;
-      r = {k:"s" + s.n + (used[s.n] > 1 ? "~" + used[s.n] : ""), n:s.n, d:s.d, mp:s.mp, el:s.el, t:s.t, chain:s.chain ?? s.ch, tr:s.tr ?? s.cc, evo:s.evo, c:s.c || [], at:s.at, pcs:[], bds:[]}; SK.set(key, r); }
+      r = {k:"s" + s.n + (used[s.n] > 1 ? "~" + used[s.n] : ""), n:s.n, d:s.d, mp:s.mp, el:s.el, t:s.t, chain:s.chain ?? s.ch, tr:s.tr ?? s.cc, evo:s.evo, c:s.c || [], at:s.at, ty:s.ty, cg:s.cg, pcs:[], bds:[]}; SK.set(key, r); }
     own(r); };
   D.chars.forEach(c => (c.skills || []).forEach(s => add(s, r => { if (!r.pcs.includes(c.n)) r.pcs.push(c.n); })));
+  // 2026-10-03 17:50 패시브 — 스킬 보드 칸 가운데 스킬이 아닌 것(이름 ≠ 설명 — 「스킬 진화」 칸도 이름 = 설명이라 빠진다)
+  D.chars.forEach(c => { const own = new Set((c.skills || []).map(s => s.n));
+    (c.boards || []).forEach(b => b.nodes.forEach(([, n, d]) => { if (n !== d && !own.has(n))
+      add({n, d, t:"패시브", ty:"패시브"}, r => { if (!r.pcs.includes(c.n)) r.pcs.push(c.n); }); })); });
   D.badges.forEach(b => b.t.forEach(t => (t.sk || []).forEach(s => add(s, r => { if (!r.bds.includes(b.n)) r.bds.push(b.n); if (b.sp && b.sp.length) r.vsp = b.sp; else r.op = 1; }))));
   D.skills = [...SK.values()];
   D.skills.forEach(r => { r.src = [r.pcs.length ? "동료" : "", r.bds.length ? "배지" : ""].filter(Boolean);
@@ -321,7 +329,7 @@ const FACETS = {
   badges:  [["도감 탭", r => r.bt], ["분류", r => r.cat]],   // 2026-10-01 첫 칸 = 인게임 도감 하위 탭
   cats:    [["시대", r => r.era], ["거처", r => r.wh]],
   memories:[["종류", r => r.kind], ["묶음", r => r.g]],
-  skills:  [["분류", r => r.c], ["타입", r => r.at], ["출처", r => r.src], ["속성", r => r.el], ["종류", r => r.t]]};   // 2026-10-03 13:00 · 17:10 분류 · 타입(CODEX #skills 판정)
+  skills:  [["종류", r => r.ty], ["분류", r => r.c], ["체인 조건", r => r.cg], ["타입", r => r.at], ["출처", r => r.src], ["속성", r => r.el]]};   // 2026-10-03 13:00 · 17:10 분류 · 타입(CODEX #skills 판정)
 function matches(r){
   const q = S.q.trim().toLowerCase();
   if (q && !(`${r.n} ${r.nj || ""}`.toLowerCase().includes(q))) return false;
@@ -369,7 +377,13 @@ function renderTabs(){
     const n = rows(t.id).filter(r => !q || `${r.n} ${r.nj || ""}`.toLowerCase().includes(q)).length;
     return `<button class="tab" role="tab" data-tab="${t.id}" aria-selected="${t.id === S.tab}">${t.n}<span class="c">${n}</span></button>`;
   }).join("");
+  const a = $("#tabs").querySelector('[aria-selected="true"]');   // 2026-10-03 17:50 고른 탭이 화면 밖이면 끌어온다
+  if (a) $("#tabs").scrollLeft = Math.max(0, Math.min($("#tabs").scrollLeft, a.offsetLeft - 8), a.offsetLeft + a.offsetWidth - $("#tabs").clientWidth + 8);
+  tabEdge();
 }
+function tabEdge(){ const w = $("#tabs"); w.classList.toggle("fl", w.scrollLeft > 2); w.classList.toggle("fr", w.scrollLeft + w.clientWidth < w.scrollWidth - 2); }
+addEventListener("resize", () => tabEdge());
+$("#tabs").addEventListener("scroll", tabEdge, {passive:true});
 function renderChips(){
   const all = rows(S.tab), f = S.f[S.tab] || (S.f[S.tab] = {});
   $("#chips").innerHTML = (FACETS[S.tab] || []).map(([fn, get]) => {
@@ -560,7 +574,7 @@ function memoryDetail(r){
 }
 // 2026-10-03 13:00 스킬 상세 — 게임 문구만(위력 · 확률 해석 없음)
 function skillDetail(r){
-  let h = `<div class="hero"><div class="ic">${icon("", r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.c.join(" · "), r.at, r.t, r.el && r.el !== "무" ? r.el + " 속성" : ""].filter(Boolean).join(" · "))}</div></div></div>`;
+  let h = `<div class="hero"><div class="ic">${icon("", r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.ty, r.c.join(" · "), r.at, r.el && r.el !== "무" ? r.el + " 속성" : ""].filter(Boolean).join(" · "))}</div></div></div>`;
   const st = [];
   if (r.mp != null) st.push([num(r.mp), "MP"]);
   if (r.chain) st.push([r.chain, "체인"]);
