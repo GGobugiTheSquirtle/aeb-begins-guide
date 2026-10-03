@@ -288,7 +288,7 @@ async function load(){
   const SK = new Map(), used = {};
   const add = (s, own) => { const key = s.n + "\u0001" + s.d; let r = SK.get(key);
     if (!r){ used[s.n] = (used[s.n] || 0) + 1;
-      r = {k:"s" + s.n + (used[s.n] > 1 ? "~" + used[s.n] : ""), n:s.n, d:s.d, mp:s.mp, el:s.el, t:s.t, chain:s.chain ?? s.ch, tr:s.tr ?? s.cc, evo:s.evo, pcs:[], bds:[]}; SK.set(key, r); }
+      r = {k:"s" + s.n + (used[s.n] > 1 ? "~" + used[s.n] : ""), n:s.n, d:s.d, mp:s.mp, el:s.el, t:s.t, chain:s.chain ?? s.ch, tr:s.tr ?? s.cc, evo:s.evo, c:s.c || [], at:s.at, pcs:[], bds:[]}; SK.set(key, r); }
     own(r); };
   D.chars.forEach(c => (c.skills || []).forEach(s => add(s, r => { if (!r.pcs.includes(c.n)) r.pcs.push(c.n); })));
   D.badges.forEach(b => b.t.forEach(t => (t.sk || []).forEach(s => add(s, r => { if (!r.bds.includes(b.n)) r.bds.push(b.n); if (b.sp && b.sp.length) r.vsp = b.sp; else r.op = 1; }))));
@@ -321,7 +321,7 @@ const FACETS = {
   badges:  [["Codex tab", r => r.bt], ["Type", r => r.cat]],   
   cats:    [["Era", r => r.era], ["Home", r => r.wh]],
   memories:[["Kind", r => r.kind], ["Group", r => r.g]],
-  skills:  [["Source", r => r.src], ["Element", r => r.el], ["Kind", r => r.t]]};   // 2026-10-03 13:00
+  skills:  [["Type", r => r.c], ["Attack type", r => r.at], ["Source", r => r.src], ["Element", r => r.el], ["Kind", r => r.t]]};   
 function matches(r){
   const q = S.q.trim().toLowerCase();
   if (q && !(`${r.n} ${r.nj || ""}`.toLowerCase().includes(q))) return false;
@@ -399,7 +399,7 @@ function card(r, i){
     case "badge": sub = [noTxt(r), r.cat, r.pc].filter(Boolean).join(" · "); tags = tag(r.t[r.t.length - 1].a); break;
     case "cat": sub = [noTxt(r), r.wh, r.area].filter(Boolean).join(" · "); if (r.per) tags = tag(r.per); break;
     case "memory": sub = [r.g, r.wh].filter(Boolean).join(" · "); tags = tag(r.kind); break;
-    case "skill": sub = [[...r.pcs, ...r.bds].slice(0, 2).join(", ") + (r.pcs.length + r.bds.length > 2 ? " +" : ""), r.mp != null ? `MP ${r.mp}` : ""].filter(Boolean).join(" · ");
+    case "skill": sub = [r.at, [...r.pcs, ...r.bds].slice(0, 2).join(", ") + (r.pcs.length + r.bds.length > 2 ? " +" : ""), r.mp != null ? `MP ${r.mp}` : ""].filter(Boolean).join(" · ");
       tags = (r.el && r.el !== "None" ? tag(r.el, r.el) : "") + (r.t && r.t !== "Active" ? tag(r.t) : "") + (r.chain ? tag(`Chain ${r.chain}`) : ""); break;
   }
   if (r._t === "map") return `<button class="card map${vl}" style="--i:${i}" data-k="${esc(r.k)}"><div class="thumb">${r.i ? icon(r.i) : ""}</div><div class="body"><div class="nm">${esc(r.n)}</div><div class="sub">Lv ${range(r.lv)}${r.ng ? ` · New Game+ Lv ${range(r.ng)}` : ""} · Enemies ${r.en.length} · Treasure ${r.ch.filter(c => c.o !== "Event").length}</div></div></button>`;
@@ -429,6 +429,7 @@ function itemDetail(r){
   if (r.fx) h += `<h3>Effect</h3><p class="prose">${esc(r.fx)}</p>`;
   if (r.pc) h += `<h3>Exclusive</h3><p class="prose">${link(r.pc, "char")} Exclusive</p>`;
   if (r.d) h += `<h3>Description</h3><p class="prose">${esc(r.d)}</p>`;
+  if (r.get) h += `<h3>How to get</h3><p class="prose">${spText(r.get)}</p>`;   // 2026-10-03 16:10
   h += `<h3>Where to get</h3>${srcList(r.src)}`;
   if (r.rc){
     const rec = `<ul class="list">${r.rc.map(([mk, n]) => { const m = K[mk]; return `<li><span class="l">${m ? link(m.n, "item") : esc(mk)}</span><span class="r">× ${n}</span></li>`; }).join("")}</ul>`;
@@ -555,7 +556,7 @@ function memoryDetail(r){
 }
 
 function skillDetail(r){
-  let h = `<div class="hero"><div class="ic">${icon("", r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.t, r.el && r.el !== "None" ? r.el + " Element" : ""].filter(Boolean).join(" · "))}</div></div></div>`;
+  let h = `<div class="hero"><div class="ic">${icon("", r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.c.join(" · "), r.at, r.t, r.el && r.el !== "None" ? r.el + " Element" : ""].filter(Boolean).join(" · "))}</div></div></div>`;
   const st = [];
   if (r.mp != null) st.push([num(r.mp), "MP"]);
   if (r.chain) st.push([r.chain, "Chain"]);
@@ -589,6 +590,7 @@ function mini(r){
       if (r.ab) body += row("Abilities", `<b>${esc(r.ab)}</b> ${esc(r.abd || "")}`);
       if (r.fx) body += row("Effect", esc(r.fx.split("\n")[0]));
       const src = r.src || [];
+      if (r.get) body += row("How to get", spText(r.get));
       body += row("Where to get", src.slice(0, 3).map(s => `${s[2] === "boss" ? veilSpan(esc(s[1])) : spText(s[1])} <span class="muted">${esc(s[0])}</span>`).join("<br>") + (src.length > 3 ? `<br><span class="muted">+ ${src.length - 3} more</span>` : ""));
       if (r.rc) body += row("Crafting materials", (r.sp || []).includes("secret") ? veilSpan(r.rc.map(([mk, n]) => `${esc((K[mk] || {}).n || mk)} × ${n}`).join(", ")) : r.rc.map(([mk, n]) => `${K[mk] ? link(K[mk].n, "item") : esc(mk)} × ${n}`).join(", "));
       break; }
@@ -618,7 +620,7 @@ function mini(r){
       body = kv([[r.en.length, "Enemies"], [r.ch.filter(c => c.o !== "Event").length, "Treasure"], [r.sh.length, "Shop items"]]);
       break;
     case "skill":
-      sub = [r.t, r.el && r.el !== "None" ? r.el + " Element" : ""].filter(Boolean).join(" · ");
+      sub = [r.c.join("/"), r.at, r.el && r.el !== "None" ? r.el + " Element" : ""].filter(Boolean).join(" · ");
       body = kv([[r.mp != null ? num(r.mp) : "", "MP"], [r.chain || "", "Chain"]]) + row("Trigger", esc(r.tr || "")) + row("Effect", esc(r.d).replace(/\n/g, "<br>")) +
         row("Used by", r.pcs.map(n => link(n, "char")).join(", ")) + row("Badges", r.bds.map(n => link(n, "badge")).join(", "));
       break;

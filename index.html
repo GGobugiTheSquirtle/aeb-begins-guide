@@ -288,7 +288,7 @@ async function load(){
   const SK = new Map(), used = {};
   const add = (s, own) => { const key = s.n + "\u0001" + s.d; let r = SK.get(key);
     if (!r){ used[s.n] = (used[s.n] || 0) + 1;
-      r = {k:"s" + s.n + (used[s.n] > 1 ? "~" + used[s.n] : ""), n:s.n, d:s.d, mp:s.mp, el:s.el, t:s.t, chain:s.chain ?? s.ch, tr:s.tr ?? s.cc, evo:s.evo, pcs:[], bds:[]}; SK.set(key, r); }
+      r = {k:"s" + s.n + (used[s.n] > 1 ? "~" + used[s.n] : ""), n:s.n, d:s.d, mp:s.mp, el:s.el, t:s.t, chain:s.chain ?? s.ch, tr:s.tr ?? s.cc, evo:s.evo, c:s.c || [], at:s.at, pcs:[], bds:[]}; SK.set(key, r); }
     own(r); };
   D.chars.forEach(c => (c.skills || []).forEach(s => add(s, r => { if (!r.pcs.includes(c.n)) r.pcs.push(c.n); })));
   D.badges.forEach(b => b.t.forEach(t => (t.sk || []).forEach(s => add(s, r => { if (!r.bds.includes(b.n)) r.bds.push(b.n); if (b.sp && b.sp.length) r.vsp = b.sp; else r.op = 1; }))));
@@ -321,7 +321,7 @@ const FACETS = {
   badges:  [["도감 탭", r => r.bt], ["분류", r => r.cat]],   // 2026-10-01 첫 칸 = 인게임 도감 하위 탭
   cats:    [["시대", r => r.era], ["거처", r => r.wh]],
   memories:[["종류", r => r.kind], ["묶음", r => r.g]],
-  skills:  [["출처", r => r.src], ["속성", r => r.el], ["종류", r => r.t]]};   // 2026-10-03 13:00
+  skills:  [["분류", r => r.c], ["타입", r => r.at], ["출처", r => r.src], ["속성", r => r.el], ["종류", r => r.t]]};   // 2026-10-03 13:00 · 17:10 분류 · 타입(CODEX #skills 판정)
 function matches(r){
   const q = S.q.trim().toLowerCase();
   if (q && !(`${r.n} ${r.nj || ""}`.toLowerCase().includes(q))) return false;
@@ -399,7 +399,7 @@ function card(r, i){
     case "badge": sub = [noTxt(r), r.cat, r.pc].filter(Boolean).join(" · "); tags = tag(r.t[r.t.length - 1].a); break;
     case "cat": sub = [noTxt(r), r.wh, r.area].filter(Boolean).join(" · "); if (r.per) tags = tag(r.per); break;
     case "memory": sub = [r.g, r.wh].filter(Boolean).join(" · "); tags = tag(r.kind); break;
-    case "skill": sub = [[...r.pcs, ...r.bds].slice(0, 2).join(", ") + (r.pcs.length + r.bds.length > 2 ? " 외" : ""), r.mp != null ? `MP ${r.mp}` : ""].filter(Boolean).join(" · ");
+    case "skill": sub = [r.at, [...r.pcs, ...r.bds].slice(0, 2).join(", ") + (r.pcs.length + r.bds.length > 2 ? " 외" : ""), r.mp != null ? `MP ${r.mp}` : ""].filter(Boolean).join(" · ");
       tags = (r.el && r.el !== "무" ? tag(r.el, r.el) : "") + (r.t && r.t !== "액티브" ? tag(r.t) : "") + (r.chain ? tag(`체인 ${r.chain}`) : ""); break;
   }
   if (r._t === "map") return `<button class="card map${vl}" style="--i:${i}" data-k="${esc(r.k)}"><div class="thumb">${r.i ? icon(r.i) : ""}</div><div class="body"><div class="nm">${esc(r.n)}</div><div class="sub">Lv ${range(r.lv)}${r.ng ? ` · 뉴 게임+ Lv ${range(r.ng)}` : ""} · 적 ${r.en.length} · 보물 ${r.ch.filter(c => c.o !== "이벤트").length}</div></div></button>`;
@@ -429,6 +429,7 @@ function itemDetail(r){
   if (r.fx) h += `<h3>효과</h3><p class="prose">${esc(r.fx)}</p>`;
   if (r.pc) h += `<h3>전용</h3><p class="prose">${link(r.pc, "char")} 전용</p>`;
   if (r.d) h += `<h3>설명</h3><p class="prose">${esc(r.d)}</p>`;
+  if (r.get) h += `<h3>얻는 법</h3><p class="prose">${spText(r.get)}</p>`;   // 2026-10-03 16:10
   h += `<h3>입수처</h3>${srcList(r.src)}`;
   if (r.rc){
     const rec = `<ul class="list">${r.rc.map(([mk, n]) => { const m = K[mk]; return `<li><span class="l">${m ? link(m.n, "item") : esc(mk)}</span><span class="r">× ${n}</span></li>`; }).join("")}</ul>`;
@@ -555,7 +556,7 @@ function memoryDetail(r){
 }
 // 2026-10-03 13:00 스킬 상세 — 게임 문구만(위력 · 확률 해석 없음)
 function skillDetail(r){
-  let h = `<div class="hero"><div class="ic">${icon("", r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.t, r.el && r.el !== "무" ? r.el + " 속성" : ""].filter(Boolean).join(" · "))}</div></div></div>`;
+  let h = `<div class="hero"><div class="ic">${icon("", r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.c.join(" · "), r.at, r.t, r.el && r.el !== "무" ? r.el + " 속성" : ""].filter(Boolean).join(" · "))}</div></div></div>`;
   const st = [];
   if (r.mp != null) st.push([num(r.mp), "MP"]);
   if (r.chain) st.push([r.chain, "체인"]);
@@ -589,6 +590,7 @@ function mini(r){
       if (r.ab) body += row("어빌리티", `<b>${esc(r.ab)}</b> ${esc(r.abd || "")}`);
       if (r.fx) body += row("효과", esc(r.fx.split("\n")[0]));
       const src = r.src || [];
+      if (r.get) body += row("얻는 법", spText(r.get));
       body += row("입수처", src.slice(0, 3).map(s => `${s[2] === "boss" ? veilSpan(esc(s[1])) : spText(s[1])} <span class="muted">${esc(s[0])}</span>`).join("<br>") + (src.length > 3 ? `<br><span class="muted">외 ${src.length - 3}곳</span>` : ""));
       if (r.rc) body += row("제작 재료", (r.sp || []).includes("secret") ? veilSpan(r.rc.map(([mk, n]) => `${esc((K[mk] || {}).n || mk)} × ${n}`).join(", ")) : r.rc.map(([mk, n]) => `${K[mk] ? link(K[mk].n, "item") : esc(mk)} × ${n}`).join(", "));
       break; }
@@ -618,7 +620,7 @@ function mini(r){
       body = kv([[r.en.length, "적"], [r.ch.filter(c => c.o !== "이벤트").length, "보물"], [r.sh.length, "상점 품목"]]);
       break;
     case "skill":
-      sub = [r.t, r.el && r.el !== "무" ? r.el + " 속성" : ""].filter(Boolean).join(" · ");
+      sub = [r.c.join("/"), r.at, r.el && r.el !== "무" ? r.el + " 속성" : ""].filter(Boolean).join(" · ");
       body = kv([[r.mp != null ? num(r.mp) : "", "MP"], [r.chain || "", "체인"]]) + row("발동 조건", esc(r.tr || "")) + row("효과", esc(r.d).replace(/\n/g, "<br>")) +
         row("쓰는 동료", r.pcs.map(n => link(n, "char")).join(", ")) + row("배지", r.bds.map(n => link(n, "badge")).join(", "));
       break;
