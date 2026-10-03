@@ -243,14 +243,14 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--faint);f
 <script>
 (() => {
 const TABS = [
-  {id:"chars", n:"Allies"}, {id:"equip", n:"Equipment"}, {id:"goods", n:"Items · Materials"},
+  {id:"chars", n:"Allies"}, {id:"skills", n:"Skill"}, {id:"equip", n:"Equipment"}, {id:"goods", n:"Items · Materials"},
   {id:"maps", n:"Areas"}, {id:"enemies", n:"Enemies"}, {id:"quests", n:"Quests"},
   {id:"badges", n:"Badges"}, {id:"cats", n:"Cats"}, {id:"memories", n:"Journal & Memories"}];   
 const TAB_OF_ITEM = t => (t === "weapon" || t === "armor") ? "equip" : "goods";
 const KIND_N = {weapon:"Weapons", armor:"Armor", lunch:"Food", item:"Items", mat:"Materials"};
 const VEIL_N = {boss:"Spoiler · Boss", ng:"Spoiler · 2nd Playthrough", secret:"Spoiler · Hidden recipe", story:"Spoiler · Story"};
 const RES = ["Slash","Pierce","Blunt","Magic","Fire","Earth","Wind","Water"];
-const D = {}, K = {}, BYN = {item:{}, enemy:{}, map:{}, char:{}, quest:{}, badge:{}, cat:{}, memory:{}};
+const D = {}, K = {}, BYN = {item:{}, enemy:{}, map:{}, char:{}, quest:{}, badge:{}, cat:{}, memory:{}, skill:{}};
 const S = {tab:"chars", f:{}, q:"", spoil:false, seen:new Set(), sort:{}};
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -284,6 +284,22 @@ async function load(){
   put(D.chars, "char"); put(D.items, "item"); put(D.enemies, "enemy"); put(D.maps, "map"); put(D.quests, "quest");
   put(D.badges, "badge"); put(D.cats, "cat"); put(D.memories, "memory");
   D.badges.forEach(r => r.t.forEach(t => { if (!BYN.badge[t.n]) BYN.badge[t.n] = r; }));   
+  
+  const SK = new Map(), used = {};
+  const add = (s, own) => { const key = s.n + "\u0001" + s.d; let r = SK.get(key);
+    if (!r){ used[s.n] = (used[s.n] || 0) + 1;
+      r = {k:"s" + s.n + (used[s.n] > 1 ? "~" + used[s.n] : ""), n:s.n, d:s.d, mp:s.mp, el:s.el, t:s.t, chain:s.chain ?? s.ch, tr:s.tr ?? s.cc, evo:s.evo, pcs:[], bds:[]}; SK.set(key, r); }
+    own(r); };
+  D.chars.forEach(c => (c.skills || []).forEach(s => add(s, r => { if (!r.pcs.includes(c.n)) r.pcs.push(c.n); })));
+  D.badges.forEach(b => b.t.forEach(t => (t.sk || []).forEach(s => add(s, r => { if (!r.bds.includes(b.n)) r.bds.push(b.n); if (b.sp && b.sp.length) r.vsp = b.sp; else r.op = 1; }))));
+  D.skills = [...SK.values()];
+  D.skills.forEach(r => { r.src = [r.pcs.length ? "Allies" : "", r.bds.length ? "Badges" : ""].filter(Boolean);
+    if (!r.pcs.length && !r.op && r.vsp) r.sp = r.vsp;                    
+  });
+  const share = (a, b) => a.pcs.some(n => b.pcs.includes(n)) || a.bds.some(n => b.bds.includes(n));   
+  D.skills.forEach(r => { r.pre = D.skills.filter(x => x.evo === r.n && share(x, r));
+    const ev = D.skills.filter(x => x.n === r.evo); r.evoR = ev.find(x => share(x, r)) || ev[0]; });
+  put(D.skills, "skill");
 }
 
 function rows(tab){
@@ -304,7 +320,8 @@ const FACETS = {
   maps:    [],
   badges:  [["Codex tab", r => r.bt], ["Type", r => r.cat]],   
   cats:    [["Era", r => r.era], ["Home", r => r.wh]],
-  memories:[["Kind", r => r.kind], ["Group", r => r.g]]};
+  memories:[["Kind", r => r.kind], ["Group", r => r.g]],
+  skills:  [["Source", r => r.src], ["Element", r => r.el], ["Kind", r => r.t]]};   // 2026-10-03 13:00
 function matches(r){
   const q = S.q.trim().toLowerCase();
   if (q && !(`${r.n} ${r.nj || ""}`.toLowerCase().includes(q))) return false;
@@ -326,7 +343,8 @@ const SORTS = {
   quests:  [["Rec. level", r => r.lv, 1], ["Name", r => r.n, 1]],
   badges:  [["Enemy level", r => r.lv, 1], ["Name", r => r.n, 1]],
   cats:    [["Name", r => r.n, 1]],
-  memories:[["Chapter", r => r.ch, 1]]};
+  memories:[["Chapter", r => r.ch, 1]],
+  skills:  [["MP", r => r.mp, 1], ["Chain", r => r.chain, 1], ["Name", r => r.n, 1]]};
 function sorted(list){
   const st = S.sort[S.tab]; if (!st) return list;
   const [, get] = SORTS[S.tab][st[0]], dir = st[1];
@@ -340,7 +358,7 @@ function sorted(list){
 function renderSort(){
   const st = S.sort[S.tab];
   
-  $("#sort").innerHTML = `<span class="lbl">Sort</span><button data-s="-1" aria-pressed="${!st}">${S.tab === "maps" || S.tab === "quests" ? "Default" : "Codex order"}</button>` +
+  $("#sort").innerHTML = `<span class="lbl">Sort</span><button data-s="-1" aria-pressed="${!st}">${S.tab === "maps" || S.tab === "quests" || S.tab === "skills" ? "Default" : "Codex order"}</button>` +
     (SORTS[S.tab] || []).map(([n, , d], i) => { const on = st && st[0] === i; const dir = on ? st[1] : d;
       return `<button data-s="${i}" aria-pressed="${!!on}" title="${dir > 0 ? "Low to high · A–Z" : "High to low"}">${esc(n)}${on ? (dir > 0 ? " ↑" : " ↓") : ""}</button>`; }).join("");
 }
@@ -381,6 +399,8 @@ function card(r, i){
     case "badge": sub = [noTxt(r), r.cat, r.pc].filter(Boolean).join(" · "); tags = tag(r.t[r.t.length - 1].a); break;
     case "cat": sub = [noTxt(r), r.wh, r.area].filter(Boolean).join(" · "); if (r.per) tags = tag(r.per); break;
     case "memory": sub = [r.g, r.wh].filter(Boolean).join(" · "); tags = tag(r.kind); break;
+    case "skill": sub = [[...r.pcs, ...r.bds].slice(0, 2).join(", ") + (r.pcs.length + r.bds.length > 2 ? " +" : ""), r.mp != null ? `MP ${r.mp}` : ""].filter(Boolean).join(" · ");
+      tags = (r.el && r.el !== "None" ? tag(r.el, r.el) : "") + (r.t && r.t !== "Active" ? tag(r.t) : "") + (r.chain ? tag(`Chain ${r.chain}`) : ""); break;
   }
   if (r._t === "map") return `<button class="card map${vl}" style="--i:${i}" data-k="${esc(r.k)}"><div class="thumb">${r.i ? icon(r.i) : ""}</div><div class="body"><div class="nm">${esc(r.n)}</div><div class="sub">Lv ${range(r.lv)}${r.ng ? ` · New Game+ Lv ${range(r.ng)}` : ""} · Enemies ${r.en.length} · Treasure ${r.ch.filter(c => c.o !== "Event").length}</div></div></button>`;
   return `<button class="card${vl}" style="--i:${i}" data-k="${esc(r.k)}">${r._t === "quest" ? "" : `<div class="ic">${icon(r.i, r.n)}</div>`}<div style="min-width:0"><div class="nm">${esc(r.n)}</div><div class="sub">${esc(sub)}</div>${tags ? `<div class="tags">${tags}</div>` : ""}</div></button>`;
@@ -534,6 +554,21 @@ function memoryDetail(r){
   return h;
 }
 
+function skillDetail(r){
+  let h = `<div class="hero"><div class="ic">${icon("", r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.t, r.el && r.el !== "None" ? r.el + " Element" : ""].filter(Boolean).join(" · "))}</div></div></div>`;
+  const st = [];
+  if (r.mp != null) st.push([num(r.mp), "MP"]);
+  if (r.chain) st.push([r.chain, "Chain"]);
+  if (st.length) h += `<div class="stats">${st.map(([v, l]) => `<div><b>${esc(v)}</b><span>${l}</span></div>`).join("")}</div>`;
+  if (r.tr) h += `<h3>Trigger</h3><p class="prose">${esc(r.tr)}</p>`;
+  h += `<h3>Effect</h3><p class="prose">${esc(r.d)}</p>`;
+  const skl = x => `<a class="lk" data-p="${esc(x.k)}" role="button" tabindex="0" aria-expanded="false">${esc(x.n)}</a>`;
+  if (r.evoR || r.pre.length) h += `<h3>Upgrade</h3><ul class="list">${r.pre.map(x => `<li><span class="l">${skl(x)}</span><span class="r">Before upgrade</span></li>`).join("")}${r.evoR ? `<li><span class="l">${skl(r.evoR)}</span><span class="r">Upgraded form</span></li>` : ""}</ul>`;
+  if (r.pcs.length) h += `<h3>Used by</h3><ul class="list">${r.pcs.map(n => `<li><span class="l">${link(n, "char")}</span></li>`).join("")}</ul>`;
+  if (r.bds.length) h += `<h3>Badges granting this skill</h3><ul class="list">${r.bds.map(n => `<li><span class="l">${link(n, "badge")}</span></li>`).join("")}</ul>`;
+  return h;
+}
+
 function mini(r){
   const kv = xs => `<div class="kv">${xs.filter(x => x[0] !== "" && x[0] != null).map(([v, l]) => `<span>${l} <b>${esc(v)}</b></span>`).join("")}</div>`;
   const row = (l, h) => h ? `<div class="row"><span>${l}</span>${h}</div>` : "";
@@ -582,6 +617,11 @@ function mini(r){
       sub = `Enemy level ${range(r.lv)}${r.ng ? ` · New Game+ enemy level ${range(r.ng)}` : ""}`;   
       body = kv([[r.en.length, "Enemies"], [r.ch.filter(c => c.o !== "Event").length, "Treasure"], [r.sh.length, "Shop items"]]);
       break;
+    case "skill":
+      sub = [r.t, r.el && r.el !== "None" ? r.el + " Element" : ""].filter(Boolean).join(" · ");
+      body = kv([[r.mp != null ? num(r.mp) : "", "MP"], [r.chain || "", "Chain"]]) + row("Trigger", esc(r.tr || "")) + row("Effect", esc(r.d).replace(/\n/g, "<br>")) +
+        row("Used by", r.pcs.map(n => link(n, "char")).join(", ")) + row("Badges", r.bds.map(n => link(n, "badge")).join(", "));
+      break;
   }
   const ic = r._t === "quest" ? "" : `<div class="ic">${icon(r.i, r.n)}</div>`;
   return `<div class="ph">${ic}<div><b>${esc(r.n)}</b><div class="sub">${esc(sub)}</div></div></div>${body}<button class="more" data-k="${esc(r.k)}">Full details →</button>`;
@@ -601,16 +641,16 @@ function peek(a){
   after.after(el);
   a.setAttribute("aria-expanded", "true");
 }
-const CRUMB = {char:"Allies", item:"Equipment · Items", enemy:"Enemies", map:"Areas", quest:"Quests", badge:"Badges", cat:"Cats", memory:"Journal & Memories"};
+const CRUMB = {char:"Allies", item:"Equipment · Items", enemy:"Enemies", map:"Areas", quest:"Quests", badge:"Badges", cat:"Cats", memory:"Journal & Memories", skill:"Skill"};
 function open(k, push){
   const r = K[k]; if (!r) return;
   S.seen.add(k);
-  const body = {char:charDetail, item:itemDetail, enemy:enemyDetail, map:mapDetail, quest:questDetail, badge:badgeDetail, cat:catDetail, memory:memoryDetail}[r._t](r);
+  const body = {char:charDetail, item:itemDetail, enemy:enemyDetail, map:mapDetail, quest:questDetail, badge:badgeDetail, cat:catDetail, memory:memoryDetail, skill:skillDetail}[r._t](r);
   const d = $("#detail");
   d.innerHTML = `<div class="dh"><span class="crumb">${CRUMB[r._t]}</span><button class="x" data-close aria-label="Close"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="#2F3437" stroke-width="1.8" stroke-linecap="round"/></svg></button></div><div class="db">${body}</div>`;
   d.classList.add("on"); d.setAttribute("aria-hidden", "false"); d.scrollTop = 0;
   $("#scrim").classList.add("on");
-  const tab = r._t === "item" ? TAB_OF_ITEM(r.tab) : {char:"chars", enemy:"enemies", map:"maps", quest:"quests", badge:"badges", cat:"cats", memory:"memories"}[r._t];
+  const tab = r._t === "item" ? TAB_OF_ITEM(r.tab) : {char:"chars", enemy:"enemies", map:"maps", quest:"quests", badge:"badges", cat:"cats", memory:"memories", skill:"skills"}[r._t];
   if (push !== false) history.replaceState(null, "", `#${tab}/${encodeURIComponent(k)}`);
   const c = document.querySelector(`.card[data-k="${CSS.escape(k)}"]`); if (c) c.classList.remove("veil");
 }

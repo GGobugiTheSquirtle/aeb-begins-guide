@@ -243,14 +243,14 @@ footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--faint);f
 <script>
 (() => {
 const TABS = [
-  {id:"chars", n:"동료"}, {id:"equip", n:"장비"}, {id:"goods", n:"아이템 · 재료"},
+  {id:"chars", n:"동료"}, {id:"skills", n:"스킬"}, {id:"equip", n:"장비"}, {id:"goods", n:"아이템 · 재료"},
   {id:"maps", n:"지역"}, {id:"enemies", n:"적"}, {id:"quests", n:"퀘스트"},
   {id:"badges", n:"배지"}, {id:"cats", n:"고양이"}, {id:"memories", n:"기억"}];   // 2026-09-27 인게임 도감 분류 중 빠져 있던 셋
 const TAB_OF_ITEM = t => (t === "weapon" || t === "armor") ? "equip" : "goods";
 const KIND_N = {weapon:"무기", armor:"방어구", lunch:"도시락", item:"아이템", mat:"재료"};
 const VEIL_N = {boss:"스포일러 · 보스", ng:"스포일러 · 2회차", secret:"스포일러 · 숨은 제작법", story:"스포일러 · 스토리"};
 const RES = ["베기","찌르기","타격","마법","불","땅","바람","물"];
-const D = {}, K = {}, BYN = {item:{}, enemy:{}, map:{}, char:{}, quest:{}, badge:{}, cat:{}, memory:{}};
+const D = {}, K = {}, BYN = {item:{}, enemy:{}, map:{}, char:{}, quest:{}, badge:{}, cat:{}, memory:{}, skill:{}};
 const S = {tab:"chars", f:{}, q:"", spoil:false, seen:new Set(), sort:{}};
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -284,6 +284,22 @@ async function load(){
   put(D.chars, "char"); put(D.items, "item"); put(D.enemies, "enemy"); put(D.maps, "map"); put(D.quests, "quest");
   put(D.badges, "badge"); put(D.cats, "cat"); put(D.memories, "memory");
   D.badges.forEach(r => r.t.forEach(t => { if (!BYN.badge[t.n]) BYN.badge[t.n] = r; }));   // 등급 이름(「…의 증표」)으로도 찾는다
+  // 2026-10-03 13:00 스킬 — 동료 스킬(chars.skills) + 배지가 주는 스킬(badges t[].sk)을 모은다(따로 받는 데이터 없음). 이름 · 설명이 같으면 한 장
+  const SK = new Map(), used = {};
+  const add = (s, own) => { const key = s.n + "\u0001" + s.d; let r = SK.get(key);
+    if (!r){ used[s.n] = (used[s.n] || 0) + 1;
+      r = {k:"s" + s.n + (used[s.n] > 1 ? "~" + used[s.n] : ""), n:s.n, d:s.d, mp:s.mp, el:s.el, t:s.t, chain:s.chain ?? s.ch, tr:s.tr ?? s.cc, evo:s.evo, pcs:[], bds:[]}; SK.set(key, r); }
+    own(r); };
+  D.chars.forEach(c => (c.skills || []).forEach(s => add(s, r => { if (!r.pcs.includes(c.n)) r.pcs.push(c.n); })));
+  D.badges.forEach(b => b.t.forEach(t => (t.sk || []).forEach(s => add(s, r => { if (!r.bds.includes(b.n)) r.bds.push(b.n); if (b.sp && b.sp.length) r.vsp = b.sp; else r.op = 1; }))));
+  D.skills = [...SK.values()];
+  D.skills.forEach(r => { r.src = [r.pcs.length ? "동료" : "", r.bds.length ? "배지" : ""].filter(Boolean);
+    if (!r.pcs.length && !r.op && r.vsp) r.sp = r.vsp;                    // 가린 배지에서만 나오는 스킬은 같이 가린다
+  });
+  const share = (a, b) => a.pcs.some(n => b.pcs.includes(n)) || a.bds.some(n => b.bds.includes(n));   // 같은 이름이 여럿이면 주인이 겹치는 쪽
+  D.skills.forEach(r => { r.pre = D.skills.filter(x => x.evo === r.n && share(x, r));
+    const ev = D.skills.filter(x => x.n === r.evo); r.evoR = ev.find(x => share(x, r)) || ev[0]; });
+  put(D.skills, "skill");
 }
 
 function rows(tab){
@@ -304,7 +320,8 @@ const FACETS = {
   maps:    [],
   badges:  [["도감 탭", r => r.bt], ["분류", r => r.cat]],   // 2026-10-01 첫 칸 = 인게임 도감 하위 탭
   cats:    [["시대", r => r.era], ["거처", r => r.wh]],
-  memories:[["종류", r => r.kind], ["묶음", r => r.g]]};
+  memories:[["종류", r => r.kind], ["묶음", r => r.g]],
+  skills:  [["출처", r => r.src], ["속성", r => r.el], ["종류", r => r.t]]};   // 2026-10-03 13:00
 function matches(r){
   const q = S.q.trim().toLowerCase();
   if (q && !(`${r.n} ${r.nj || ""}`.toLowerCase().includes(q))) return false;
@@ -326,7 +343,8 @@ const SORTS = {
   quests:  [["권장 레벨", r => r.lv, 1], ["이름", r => r.n, 1]],
   badges:  [["적 레벨", r => r.lv, 1], ["이름", r => r.n, 1]],
   cats:    [["이름", r => r.n, 1]],
-  memories:[["장 번호", r => r.ch, 1]]};
+  memories:[["장 번호", r => r.ch, 1]],
+  skills:  [["MP", r => r.mp, 1], ["체인", r => r.chain, 1], ["이름", r => r.n, 1]]};
 function sorted(list){
   const st = S.sort[S.tab]; if (!st) return list;
   const [, get] = SORTS[S.tab][st[0]], dir = st[1];
@@ -340,7 +358,7 @@ function sorted(list){
 function renderSort(){
   const st = S.sort[S.tab];
   // 2026-09-27 기본 순서 = 게임 도감 목록 순서(지역 · 퀘스트는 게임 도감이 없어 「기본」)
-  $("#sort").innerHTML = `<span class="lbl">정렬</span><button data-s="-1" aria-pressed="${!st}">${S.tab === "maps" || S.tab === "quests" ? "기본" : "도감 순"}</button>` +
+  $("#sort").innerHTML = `<span class="lbl">정렬</span><button data-s="-1" aria-pressed="${!st}">${S.tab === "maps" || S.tab === "quests" || S.tab === "skills" ? "기본" : "도감 순"}</button>` +
     (SORTS[S.tab] || []).map(([n, , d], i) => { const on = st && st[0] === i; const dir = on ? st[1] : d;
       return `<button data-s="${i}" aria-pressed="${!!on}" title="${dir > 0 ? "낮은 순 · 가나다순" : "높은 순"}">${esc(n)}${on ? (dir > 0 ? " ↑" : " ↓") : ""}</button>`; }).join("");
 }
@@ -381,6 +399,8 @@ function card(r, i){
     case "badge": sub = [noTxt(r), r.cat, r.pc].filter(Boolean).join(" · "); tags = tag(r.t[r.t.length - 1].a); break;
     case "cat": sub = [noTxt(r), r.wh, r.area].filter(Boolean).join(" · "); if (r.per) tags = tag(r.per); break;
     case "memory": sub = [r.g, r.wh].filter(Boolean).join(" · "); tags = tag(r.kind); break;
+    case "skill": sub = [[...r.pcs, ...r.bds].slice(0, 2).join(", ") + (r.pcs.length + r.bds.length > 2 ? " 외" : ""), r.mp != null ? `MP ${r.mp}` : ""].filter(Boolean).join(" · ");
+      tags = (r.el && r.el !== "무" ? tag(r.el, r.el) : "") + (r.t && r.t !== "액티브" ? tag(r.t) : "") + (r.chain ? tag(`체인 ${r.chain}`) : ""); break;
   }
   if (r._t === "map") return `<button class="card map${vl}" style="--i:${i}" data-k="${esc(r.k)}"><div class="thumb">${r.i ? icon(r.i) : ""}</div><div class="body"><div class="nm">${esc(r.n)}</div><div class="sub">Lv ${range(r.lv)}${r.ng ? ` · 뉴 게임+ Lv ${range(r.ng)}` : ""} · 적 ${r.en.length} · 보물 ${r.ch.filter(c => c.o !== "이벤트").length}</div></div></button>`;
   return `<button class="card${vl}" style="--i:${i}" data-k="${esc(r.k)}">${r._t === "quest" ? "" : `<div class="ic">${icon(r.i, r.n)}</div>`}<div style="min-width:0"><div class="nm">${esc(r.n)}</div><div class="sub">${esc(sub)}</div>${tags ? `<div class="tags">${tags}</div>` : ""}</div></button>`;
@@ -533,6 +553,21 @@ function memoryDetail(r){
   if (r.story) h += `<h3>내용</h3>` + spBlock(r.story);
   return h;
 }
+// 2026-10-03 13:00 스킬 상세 — 게임 문구만(위력 · 확률 해석 없음)
+function skillDetail(r){
+  let h = `<div class="hero"><div class="ic">${icon("", r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.t, r.el && r.el !== "무" ? r.el + " 속성" : ""].filter(Boolean).join(" · "))}</div></div></div>`;
+  const st = [];
+  if (r.mp != null) st.push([num(r.mp), "MP"]);
+  if (r.chain) st.push([r.chain, "체인"]);
+  if (st.length) h += `<div class="stats">${st.map(([v, l]) => `<div><b>${esc(v)}</b><span>${l}</span></div>`).join("")}</div>`;
+  if (r.tr) h += `<h3>발동 조건</h3><p class="prose">${esc(r.tr)}</p>`;
+  h += `<h3>효과</h3><p class="prose">${esc(r.d)}</p>`;
+  const skl = x => `<a class="lk" data-p="${esc(x.k)}" role="button" tabindex="0" aria-expanded="false">${esc(x.n)}</a>`;
+  if (r.evoR || r.pre.length) h += `<h3>강화</h3><ul class="list">${r.pre.map(x => `<li><span class="l">${skl(x)}</span><span class="r">강화 전</span></li>`).join("")}${r.evoR ? `<li><span class="l">${skl(r.evoR)}</span><span class="r">강화 후</span></li>` : ""}</ul>`;
+  if (r.pcs.length) h += `<h3>쓰는 동료</h3><ul class="list">${r.pcs.map(n => `<li><span class="l">${link(n, "char")}</span></li>`).join("")}</ul>`;
+  if (r.bds.length) h += `<h3>이 스킬을 주는 배지</h3><ul class="list">${r.bds.map(n => `<li><span class="l">${link(n, "badge")}</span></li>`).join("")}</ul>`;
+  return h;
+}
 /* ---------------- 제자리 펼치기 (2026-09-27) ---------------- */
 function mini(r){
   const kv = xs => `<div class="kv">${xs.filter(x => x[0] !== "" && x[0] != null).map(([v, l]) => `<span>${l} <b>${esc(v)}</b></span>`).join("")}</div>`;
@@ -582,6 +617,11 @@ function mini(r){
       sub = `적 레벨 ${range(r.lv)}${r.ng ? ` · 뉴 게임+ 적 레벨 ${range(r.ng)}` : ""}`;   // 2026-10-02 뉴 게임+ 필드 적 레벨
       body = kv([[r.en.length, "적"], [r.ch.filter(c => c.o !== "이벤트").length, "보물"], [r.sh.length, "상점 품목"]]);
       break;
+    case "skill":
+      sub = [r.t, r.el && r.el !== "무" ? r.el + " 속성" : ""].filter(Boolean).join(" · ");
+      body = kv([[r.mp != null ? num(r.mp) : "", "MP"], [r.chain || "", "체인"]]) + row("발동 조건", esc(r.tr || "")) + row("효과", esc(r.d).replace(/\n/g, "<br>")) +
+        row("쓰는 동료", r.pcs.map(n => link(n, "char")).join(", ")) + row("배지", r.bds.map(n => link(n, "badge")).join(", "));
+      break;
   }
   const ic = r._t === "quest" ? "" : `<div class="ic">${icon(r.i, r.n)}</div>`;
   return `<div class="ph">${ic}<div><b>${esc(r.n)}</b><div class="sub">${esc(sub)}</div></div></div>${body}<button class="more" data-k="${esc(r.k)}">전체 보기 →</button>`;
@@ -601,16 +641,16 @@ function peek(a){
   after.after(el);
   a.setAttribute("aria-expanded", "true");
 }
-const CRUMB = {char:"동료", item:"장비 · 아이템", enemy:"적", map:"지역", quest:"퀘스트", badge:"배지", cat:"고양이", memory:"기억"};
+const CRUMB = {char:"동료", item:"장비 · 아이템", enemy:"적", map:"지역", quest:"퀘스트", badge:"배지", cat:"고양이", memory:"기억", skill:"스킬"};
 function open(k, push){
   const r = K[k]; if (!r) return;
   S.seen.add(k);
-  const body = {char:charDetail, item:itemDetail, enemy:enemyDetail, map:mapDetail, quest:questDetail, badge:badgeDetail, cat:catDetail, memory:memoryDetail}[r._t](r);
+  const body = {char:charDetail, item:itemDetail, enemy:enemyDetail, map:mapDetail, quest:questDetail, badge:badgeDetail, cat:catDetail, memory:memoryDetail, skill:skillDetail}[r._t](r);
   const d = $("#detail");
   d.innerHTML = `<div class="dh"><span class="crumb">${CRUMB[r._t]}</span><button class="x" data-close aria-label="닫기"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="#2F3437" stroke-width="1.8" stroke-linecap="round"/></svg></button></div><div class="db">${body}</div>`;
   d.classList.add("on"); d.setAttribute("aria-hidden", "false"); d.scrollTop = 0;
   $("#scrim").classList.add("on");
-  const tab = r._t === "item" ? TAB_OF_ITEM(r.tab) : {char:"chars", enemy:"enemies", map:"maps", quest:"quests", badge:"badges", cat:"cats", memory:"memories"}[r._t];
+  const tab = r._t === "item" ? TAB_OF_ITEM(r.tab) : {char:"chars", enemy:"enemies", map:"maps", quest:"quests", badge:"badges", cat:"cats", memory:"memories", skill:"skills"}[r._t];
   if (push !== false) history.replaceState(null, "", `#${tab}/${encodeURIComponent(k)}`);
   const c = document.querySelector(`.card[data-k="${CSS.escape(k)}"]`); if (c) c.classList.remove("veil");
 }
