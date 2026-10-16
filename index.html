@@ -457,7 +457,7 @@ function itemDetail(r){
   if (r.gift) h += `<h3>선물로 주면</h3><ul class="list"><li><span class="l">${r.gift["좋음"].map(n => link(n, "char")).join(", ") || "—"}</span><span class="r">${tag("좋아함", "바람")}</span></li><li><span class="l">${r.gift["나쁨"].map(n => link(n, "char")).join(", ") || "—"}</span><span class="r">${tag("싫어함", "불")}</span></li></ul>`;
   return h;
 }
-const WP_BEST = {early: "엔딩 전 최선", ending: "엔딩 후 최선", ng: "뉴 게임+ 최선"};
+const WP_BEST = {early: "1회차 최선", ng: "뉴 게임+ 최선"};   // 2026-10-16 「엔딩 후」 단계 삭제 — 1회차 엔딩 뒤에만 생기는 장비가 없다
 function charDetail(r){
   let h = `<div class="hero pc"><div class="ic">${icon(r.i, r.n)}</div><div><h2>${esc(r.n)}</h2><div class="sub">${esc([r.nj, r.job, r.wt].filter(Boolean).join(" · "))}</div>${r.like ? `<div class="tags">${tag("좋아하는 것 · " + r.like)}</div>` : ""}</div></div>`;
   if (r.intro) h += `<p class="prose" style="margin-top:14px">${esc(r.intro)}</p>`;
