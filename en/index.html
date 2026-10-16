@@ -537,6 +537,9 @@ function questDetail(r){
   h += `<ul class="list" style="margin-top:14px">` +
     (r.where ? `<li><span class="l">${link(r.where, "map")}</span><span class="r">Taken at</span></li>` : "") +
     (r.cond ? `<li><span class="l">${spText(r.cond)}</span><span class="r">Requirements</span></li>` : "") + `</ul>`;
+  
+  if (r.kind === "Kinship") h += `<p class="note" style="margin:8px 0 0">Each character quest you clear raises the kinship cap by 1 (except Fine); kinship earned past the cap is lost — raise it again after clearing the character quest</p>`;
+  if (r.ch) h += `<p class="note" style="margin:8px 0 0">Chapter requirements count only the current playthrough — in New Game+ the quest opens once you finish that chapter again</p>`;
   if (r.story) h += `<h3>Details</h3>` + spBlock(r.story);
   if (r.route && r.route.length) h += `<h3>Route</h3><p class="prose">${r.route.map(n => link(n, "map")).join(" → ")}</p>`;
   if (r.rw && r.rw.length) h += `<h3>Reward</h3><ul class="list">${r.rw.map(([n, a]) => `<li><span class="l">${link(n, "item")}</span><span class="r">× ${num(a)}</span></li>`).join("")}</ul>`;

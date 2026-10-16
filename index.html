@@ -537,6 +537,9 @@ function questDetail(r){
   h += `<ul class="list" style="margin-top:14px">` +
     (r.where ? `<li><span class="l">${link(r.where, "map")}</span><span class="r">수주처</span></li>` : "") +
     (r.cond ? `<li><span class="l">${spText(r.cond)}</span><span class="r">발생 조건</span></li>` : "") + `</ul>`;
+  // 2026-10-16 「친밀 퀘스트 3 은 뉴 게임+ 전용」 오해의 두 원인 — 상한에 막혀 버려진 친밀도 · 뉴 게임+ 에서 장 조건이 초기화됨
+  if (r.kind === "친밀") h += `<p class="note" style="margin:8px 0 0">친밀도는 캐릭터 퀘스트를 하나 깰 때마다 상한이 1씩 오르고(피네 제외), 상한을 넘는 몫은 쌓이지 않는다 — 캐릭터 퀘스트를 깬 뒤 다시 올려야 한다</p>`;
+  if (r.ch) h += `<p class="note" style="margin:8px 0 0">장 조건은 지금 회차 기준 — 뉴 게임+ 에서는 그 장을 다시 끝내면 열린다</p>`;
   if (r.story) h += `<h3>내용</h3>` + spBlock(r.story);
   if (r.route && r.route.length) h += `<h3>경로</h3><p class="prose">${r.route.map(n => link(n, "map")).join(" → ")}</p>`;
   if (r.rw && r.rw.length) h += `<h3>보상</h3><ul class="list">${r.rw.map(([n, a]) => `<li><span class="l">${link(n, "item")}</span><span class="r">× ${num(a)}</span></li>`).join("")}</ul>`;
